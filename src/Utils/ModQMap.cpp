@@ -1,0 +1,16 @@
+#include "ModQMap.h"
+// #ifndef MODQMAP_IMPL
+// #define MODQMAP_IMPL
+
+template <typename K, typename V>
+V& ModQMap<K, V>::operator[](QString key) {
+    this->m_keysList.append(key);
+    return (this->m_innerMap)[key];
+}
+
+template <typename K, typename V>
+QList<K> ModQMap<K, V>::getKeys() {
+    return this->m_keysList;
+}
+
+// #endif
