@@ -2,23 +2,32 @@
 #define HELPER_MODQCOMBOBOX
 
 #include <QComboBox>
+#include <QProperty>
+#include <QPropertyNotifier>
 #include <QString>
 #include <QStringList>
-#include <QProperty>
+
+#include <functional>
 
 class ModQComboBox : public QComboBox {
     Q_OBJECT
 
-    private:
-        // QString current_value;
-        QProperty<QString>* reference_property;
+   signals:
+    void rowChanged(int row);
 
-    public:
-        ModQComboBox(QProperty<QString>* var_cont);
-        void populate(const QStringList &items, int default_index = 0);
+   public slots:
+    void updateProperty(QString string);
 
-    public slots:
-        void updateProperty(QString string);
+   private:
+    int row;
+    QString reference_property;
+    // QString current_value;
+    // QProperty<QString> reference_property;
+    // QPropertyNotifier reference_property_Notifier;
+
+   public:
+    ModQComboBox();
+    void populate(const QStringList& items, int row, int default_index = 0);
 };
 
-#endif // HELPER_MODQCOMBOBOX
+#endif  // HELPER_MODQCOMBOBOX

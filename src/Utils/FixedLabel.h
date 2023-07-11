@@ -3,12 +3,13 @@
 
 #include <QLabel>
 #include <QString>
+#include <QTextFormat>
 
 class FixedLabel : public QLabel {
     Q_OBJECT
 
-    public:
-        FixedLabel(const QString& text);
+   public:
+    FixedLabel(const QString& text);
 };
 
-#endif // HELPER_FIXEDLABEL
+#endif  // HELPER_FIXEDLABEL

@@ -1,6 +1,7 @@
 #ifndef HELPER_MODQMAP
 #define HELPER_MODQMAP
 
+#include <QDebug>
 #include <QList>
 #include <QString>
 #include <QStringList>
@@ -17,7 +18,6 @@ class ModQMap {
     QList<K> getKeys();
 
    private:
-    QStringList m_keysList;
     QMap<K, V> m_innerMap;
 };
 

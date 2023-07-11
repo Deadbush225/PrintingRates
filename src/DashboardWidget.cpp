@@ -5,267 +5,228 @@
 #include "Utils/ModQComboBox.h"
 #include "Utils/ModQMap.cpp"
 
-#include "Utils/ModQTableWidget.h"
-
 #include <cmath>
-#include <functional>
-// void DashboardWidget::valueChanged_wtf(QString new_value) {
-//     qDebug() << "SIGNAL NOTIFIED new value: " << new_value;
-// }
 
 void DashboardWidget::calculate() {
-    // qDebug() << "calculate called\n";
-    // auto mainlayout = this->layout();
-    // this->child
+    qDebug() << "Called";
+    tb->updatePrices();
 
-    qDebug() << this->contentType_Value;
-    qDebug() << this->contentType_Map[this->contentType_Value].count();
-    qDebug() << this->photoCoverage_Value;
+    // int price = pricePerPage * pageCount_Value * copyCount_Value;
+    // std::ostringstream stream;
+    // // stream << std::left;
+    // stream << std::right << std::setw(20) << "Cost per page:" << std::right
+    //        << std::setw(7) << pricePerPage << std::setw(2) << "x"
+    //        << "\n"
+    //        << std::right << std::setw(20) << "Number of pages:" << std::right
+    //        << std::setw(7) << pageCount_Value << std::setw(2) << "x"
+    //        << "\n"
+    //        << std::right << std::setw(20) << "Number of copies:" <<
+    //        std::right
+    //        << std::setw(7) << copyCount_Value << std::setw(2) << "x"
+    //        << "\n\n";
 
-    int contentType_Value = contentType_Map[this->contentType_Value]
-                                           [this->photoCoverage_Options.indexOf(
-                                               this->photoCoverage_Value)];
-    double qualityType_Value = qualityType_Map[this->qualityType_Value];
-    double paperSize_Value = paperSize_Map[this->paperSize_Value];
-    int paperType_Value = paperType_Map[this->paperType_Value];
+    // stream << std::right;
+    // stream << std::setw(20) << "Total:" << std::setw(7) << "Php " << price;
 
-    std::cout << "(" << contentType_Value << " * " << qualityType_Value << " * "
-              << paperSize_Value << " + " << paperType_Value << ") * "
-              << pageCount_Value << " * " << copyCount_Value << "\n";
-
-    int pricePerPage =
-        ceil((contentType_Value * qualityType_Value * paperSize_Value +
-              paperType_Value));
-
-    int price = pricePerPage * pageCount_Value * copyCount_Value;
-    std::ostringstream stream;
-    // stream << std::left;
-    stream << std::right << std::setw(20) << "Cost per page:" << std::right
-           << std::setw(7) << pricePerPage << std::setw(2) << "x"
-           << "\n"
-           << std::right << std::setw(20) << "Number of pages:" << std::right
-           << std::setw(7) << pageCount_Value << std::setw(2) << "x"
-           << "\n"
-           << std::right << std::setw(20) << "Number of copies:" << std::right
-           << std::setw(7) << copyCount_Value << std::setw(2) << "x"
-           << "\n\n";
-
-    stream << std::right;
-    stream << std::setw(20) << "Total:" << std::setw(7) << "Php " << price;
-
-    costBreakdown_txtedit->setText(QString::fromStdString(stream.str()));
-
-    qDebug() << price;
-
-    this->label->setText("Price: Php " + QString::number(price));
+    // //
+    // this->costBreakdown_txtedit->setText(QString::fromStdString(stream.str()));
 }
 
 void DashboardWidget::propertyChanged() {
+    qDebug() << "performing Live Calculation";
     if (this->performLiveCalculation) {
         calculate();
     }
 }
 
-// DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent) {
-//     ModQTableWidget* table = new ModQTableWidget();
-//     table->setColumnCount(10);
-//     table->setRowCount(10);
-// }
-
-// OLD IMPLEMENTATION
-
 DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent) {
-    this->pageCount_Notifier =
-        pageCount_Value.addNotifier(std::function<void()>(
-            std::bind(DashboardWidget::propertyChanged, this)));
-    this->copyCount_Notifier =
-        copyCount_Value.addNotifier(std::function<void()>(
-            std::bind(DashboardWidget::propertyChanged, this)));
-
     auto mainlayout = new QVBoxLayout(this);
-    // mainlayout->setSpacing(0);
 
-    // map every item in each category inside the map to the number of
-    // options
+    QPushButton* addNew_btn = new QPushButton("Add New Row");
 
-    // in the `photoCoverage_Options`
-    contentType_Map["Photo"] = QList<int>({10, 9, 8, 7, 6, 6});
-    contentType_Map["Text"] = QList<int>({5, 5, 4, 4, 3, 3});
-    contentType_Map["Text \\w Photo"] = QList<int>({8, 7, 6, 5, 4, 4});
+    QObject::connect(addNew_btn, &QPushButton::clicked, this->tb,
+                     &ModQTableWidget::addNewRow);
 
-    photoCoverage_Options =
-        QStringList({"Full", "5/6", "4/6", "Half", "2/6", "1/6"});
-
-    qualityType_Map["Draft"] = 0.4;
-    qualityType_Map["Standard"] = 1;
-    qualityType_Map["Standard-Vivid"] = 1.3;
-    qualityType_Map["High"] = 1.7;
-
-    paperSize_Map["Short"] = 1;
-    paperSize_Map["A4"] = 1.1;
-    paperSize_Map["Long"] = 1.2;
-
-    paperType_Map["Plain"] = 0;
-    paperType_Map["Colored Paper"] = 1;
-    paperType_Map["Sticker Paper"] = 10;
-    paperType_Map["Matte"] = 8;
-    paperType_Map["Ultra Glossy"] = 25;
-    paperType_Map["Premium Glossy"] = 25;
-    paperType_Map["Premium Semigloss"] = 25;
-    paperType_Map["Photo Paper Glossy"] = 20;
-
-    // Content Type
-    auto contentType_lbl = new FixedLabel("Content Type: ");
-
-    auto contentType_cmbx = new ModQComboBox(&(this->contentType_Value));
-    contentType_cmbx->populate(contentType_Map.getKeys(), 2);
-
-    auto contentType_lyt = new QHBoxLayout();
-    // contentType_lyt->setContentsMargins(0, 0, 0, 0);
-    // contentType_lyt->setSpacing(0);
-
-    contentType_lyt->addWidget(contentType_lbl);
-    contentType_lyt->addWidget(contentType_cmbx, 1);
-
-    // Photo Coverage
-    auto photoCoverage_lbl = new FixedLabel("Photo Coverage: ");
-
-    auto photoCoverage_cmbx = new ModQComboBox(&(this->photoCoverage_Value));
-    photoCoverage_cmbx->populate(photoCoverage_Options, 0);
-
-    auto photoCoverage_lyt = new QHBoxLayout();
-    photoCoverage_lyt->addWidget(photoCoverage_lbl);
-    photoCoverage_lyt->addWidget(photoCoverage_cmbx, 1);
-
-    // Quality Type
-    auto qualityType_lbl = new FixedLabel("Quality Type: ");
-
-    auto qualityType_cmbx = new ModQComboBox(&(this->qualityType_Value));
-    qualityType_cmbx->populate(qualityType_Map.getKeys(), 1);
-
-    auto qualityCoverage_lyt = new QHBoxLayout();
-    qualityCoverage_lyt->addWidget(qualityType_lbl);
-    qualityCoverage_lyt->addWidget(qualityType_cmbx, 1);
-
-    // Paper Size
-    auto paperSize_lbl = new FixedLabel("Paper Size: ");
-
-    auto paperSize_cmbx = new ModQComboBox(&(this->paperSize_Value));
-    paperSize_cmbx->populate(paperSize_Map.getKeys(), 1);
-
-    auto paperSize_lyt = new QHBoxLayout();
-    paperSize_lyt->addWidget(paperSize_lbl);
-    paperSize_lyt->addWidget(paperSize_cmbx, 1);
-
-    // Paper Type
-    auto paperType_lbl = new FixedLabel("Paper Type: ");
-
-    auto paperType_cmbx = new ModQComboBox(&(this->paperType_Value));
-    paperType_cmbx->populate(paperType_Map.getKeys(), 0);
-
-    auto paperType_lyt = new QHBoxLayout();
-    paperType_lyt->addWidget(paperType_lbl);
-    paperType_lyt->addWidget(paperType_cmbx, 1);
-
-    auto liveCalculation_chkbx = new QCheckBox("Live Calculation", this);
-    QObject::connect(liveCalculation_chkbx, &QCheckBox::toggled,
-                     [this](bool state) {
-                         calculate();
-                         this->performLiveCalculation = state;
-                         qDebug() << state;
+    QObject::connect(this->tb, &ModQTableWidget::totalComputed,
+                     [this](int total) {
+                         this->label->setText(QString("Price: %1").arg(total));
                      });
-    liveCalculation_chkbx->toggle();
+    this->tb->addNewRow();
 
-    // Page Count
-    auto pageCount_lbl = new FixedLabel("Pages: ");
-    QObject::connect(this->pageCount_spnbx, &QSpinBox::valueChanged,
-                     [this](int value) { this->pageCount_Value = value; });
-    this->pageCount_spnbx->setValue(1);
+    QPushButton* calculate_btn = new QPushButton("Calculate");
 
-    auto pageCount_lyt = new QHBoxLayout();
-    pageCount_lyt->addWidget(pageCount_lbl);
-    pageCount_lyt->addWidget(pageCount_spnbx);
+    QObject::connect(calculate_btn, &QPushButton::clicked, this,
+                     &DashboardWidget::calculate);
 
-    // Copies
-    auto copyCount_lbl = new FixedLabel("Copies: ");
-    QObject::connect(this->copyCount_spnbx, &QSpinBox::valueChanged,
-                     [this](int value) { this->copyCount_Value = value; });
-    this->copyCount_spnbx->setValue(1);
+    mainlayout->addWidget(addNew_btn);
+    mainlayout->addWidget(this->tb);
 
-    auto copyCount_lyt = new QHBoxLayout();
-    copyCount_lyt->addWidget(copyCount_lbl);
-    copyCount_lyt->addWidget(copyCount_spnbx);
-
-    label->setMinimumSize(140, 50);
-    label->setStyleSheet(
-        "border-width: 1px; border-style: solid; border-color: black;");
-
-    auto calculate_btn = new QPushButton("Calculate");
-    QObject::connect(calculate_btn, &QPushButton::clicked, this, &calculate);
-
-    // auto costBreakdown_txtedit = new QTextEdit();
-
-    QFont f("unexistent");
-    f.setStyleHint(QFont::Monospace);
-    this->costBreakdown_txtedit->setFont(f);
-
-    auto showDetailed_btn = new QPushButton("Show Detailed Breakdown");
-    QObject::connect(showDetailed_btn, &QPushButton::clicked, [this]() {
-        this->costBreakdown_txtedit->setHidden(
-            !this->costBreakdown_txtedit->isHidden());
-    });
-
-    auto spacer = new QSpacerItem(10, 10);
-
-    mainlayout->addLayout(contentType_lyt);
-    // mainlayout->addSpacerItem(spacer);
-
-    mainlayout->addLayout(photoCoverage_lyt);
-    // mainlayout->addSpacerItem(spacer);
-
-    mainlayout->addLayout(qualityCoverage_lyt);
-    // mainlayout->addSpacerItem(spacer);
-
-    mainlayout->addLayout(paperSize_lyt);
-    // mainlayout->addSpacerItem(spacer);
-
-    mainlayout->addLayout(paperType_lyt);
-    // mainlayout->addSpacerItem(spacer);
-
-    mainlayout->addLayout(pageCount_lyt);
-    // mainlayout->addSpacerItem(spacer);
-
-    mainlayout->addLayout(copyCount_lyt);
-    // mainlayout->addSpacerItem(spacer);
-
-    mainlayout->addWidget(liveCalculation_chkbx);
-
-    mainlayout->addStretch();
-    mainlayout->addWidget(label, 0, Qt::AlignCenter);
-    mainlayout->addSpacing(30);
+    mainlayout->addWidget(this->label);
 
     mainlayout->addWidget(calculate_btn);
-    mainlayout->addWidget(showDetailed_btn);
-    mainlayout->addWidget(costBreakdown_txtedit);
 
-    // mainlayout->setContentsMargins(5, 1, 5, 1);
-    mainlayout->setSpacing(0);
+    // +++++++++++++++++ END TABLE WIDGET +++++++++++++++++++++
+
+    // +++++++++++++++++ START COMMENTS +++++++++++++++++++++++
+
+    // // Content Type
+    // auto contentType_lbl = new FixedLabel("Content Type: ");
+
+    // auto contentType_cmbx = new ModQComboBox(&(this->contentType_Value));
+    // contentType_cmbx->populate(contentType_Map.getKeys(), 2)
+
+    // auto contentType_lyt = new QHBoxLayout();
+    // // contentType_lyt->setContentsMargins(0, 0, 0, 0);
+    // // contentType_lyt->setSpacing(0);
+
+    // contentType_lyt->addWidget(contentType_lbl);
+    // contentType_lyt->addWidget(contentType_cmbx, 1);
+
+    // // Photo Coverage
+    // auto photoCoverage_lbl = new FixedLabel("Photo Coverage: ");
+
+    // auto photoCoverage_cmbx = new
+    // ModQComboBox(&(this->photoCoverage_Value));
+    // photoCoverage_cmbx->populate(photoCoverage_Options, 0);
+
+    // auto photoCoverage_lyt = new QHBoxLayout();
+    // photoCoverage_lyt->addWidget(photoCoverage_lbl);
+    // photoCoverage_lyt->addWidget(photoCoverage_cmbx, 1);
+
+    // // Quality Type
+    // auto qualityType_lbl = new FixedLabel("Quality Type: ");
+
+    // auto qualityType_cmbx = new ModQComboBox(&(this->qualityType_Value));
+    // qualityType_cmbx->populate(qualityType_Map.getKeys(), 1);
+
+    // auto qualityCoverage_lyt = new QHBoxLayout();
+    // qualityCoverage_lyt->addWidget(qualityType_lbl);
+    // qualityCoverage_lyt->addWidget(qualityType_cmbx, 1);
+
+    // // Paper Size
+    // auto paperSize_lbl = new FixedLabel("Paper Size: ");
+
+    // auto paperSize_cmbx = new ModQComboBox(&(this->paperSize_Value));
+    // paperSize_cmbx->populate(paperSize_Map.getKeys(), 1);
+
+    // auto paperSize_lyt = new QHBoxLayout();
+    // paperSize_lyt->addWidget(paperSize_lbl);
+    // paperSize_lyt->addWidget(paperSize_cmbx, 1);
+
+    // // Paper Type
+    // auto paperType_lbl = new FixedLabel("Paper Type: ");
+
+    // auto paperType_cmbx = new ModQComboBox(&(this->paperType_Value));
+    // paperType_cmbx->populate(paperType_Map.getKeys(), 0);
+
+    // auto paperType_lyt = new QHBoxLayout();
+    // paperType_lyt->addWidget(paperType_lbl);
+    // paperType_lyt->addWidget(paperType_cmbx, 1);
+
+    // auto liveCalculation_chkbx = new QCheckBox("Live Calculation", this);
+    // QObject::connect(liveCalculation_chkbx, &QCheckBox::toggled,
+    //                  [this](bool state) {
+    //                      calculate();
+    //                      this->performLiveCalculation = state;
+    //                      qDebug() << state;
+    //                  });
+    // liveCalculation_chkbx->toggle();
+
+    // // Page Count
+    // auto pageCount_lbl = new FixedLabel("Pages: ");
+    // QObject::connect(this->pageCount_spnbx, &QSpinBox::valueChanged,
+    //                  [this](int value) { this->pageCount_Value = value;
+    //                  });
+    // this->pageCount_spnbx->setValue(1);
+
+    // auto pageCount_lyt = new QHBoxLayout();
+    // pageCount_lyt->addWidget(pageCount_lbl);
+    // pageCount_lyt->addWidget(pageCount_spnbx);
+
+    // // Copies
+    // auto copyCount_lbl = new FixedLabel("Copies: ");
+    // QObject::connect(this->copyCount_spnbx, &QSpinBox::valueChanged,
+    //                  [this](int value) { this->copyCount_Value = value;
+    //                  });
+    // this->copyCount_spnbx->setValue(1);
+
+    // auto copyCount_lyt = new QHBoxLayout();
+    // copyCount_lyt->addWidget(copyCount_lbl);
+    // copyCount_lyt->addWidget(copyCount_spnbx);
+
+    // label->setMinimumSize(140, 50);
+    // label->setStyleSheet(
+    //     "border-width: 1px; border-style: solid; border-color: black;");
+
+    // auto calculate_btn = new QPushButton("Calculate");
+    // QObject::connect(calculate_btn, &QPushButton::clicked, this,
+    // &calculate);
+
+    // // auto costBreakdown_txtedit = new QTextEdit();
+
+    // QFont f("unexistent");
+    // f.setStyleHint(QFont::Monospace);
+    // this->costBreakdown_txtedit->setFont(f);
+
+    // auto showDetailed_btn = new QPushButton("Show Detailed Breakdown");
+    // QObject::connect(showDetailed_btn, &QPushButton::clicked, [this]() {
+    //     this->costBreakdown_txtedit->setHidden(
+    //         !this->costBreakdown_txtedit->isHidden());
+    // });
+
+    // auto spacer = new QSpacerItem(10, 10);
+
+    // mainlayout->addLayout(contentType_lyt);
+    // // mainlayout->addSpacerItem(spacer);
+
+    // mainlayout->addLayout(photoCoverage_lyt);
+    // // mainlayout->addSpacerItem(spacer);
+
+    // mainlayout->addLayout(qualityCoverage_lyt);
+    // // mainlayout->addSpacerItem(spacer);
+
+    // mainlayout->addLayout(paperSize_lyt);
+    // // mainlayout->addSpacerItem(spacer);
+
+    // mainlayout->addLayout(paperType_lyt);
+    // // mainlayout->addSpacerItem(spacer);
+
+    // mainlayout->addLayout(pageCount_lyt);
+    // // mainlayout->addSpacerItem(spacer);
+
+    // mainlayout->addLayout(copyCount_lyt);
+    // // mainlayout->addSpacerItem(spacer);
+
+    // mainlayout->addWidget(liveCalculation_chkbx);
+
+    // mainlayout->addStretch();
+    // mainlayout->addWidget(label, 0, Qt::AlignCenter);
+    // mainlayout->addSpacing(30);
+
+    // mainlayout->addWidget(calculate_btn);
+    // mainlayout->addWidget(showDetailed_btn);
+    // mainlayout->addWidget(costBreakdown_txtedit);
+
+    // // mainlayout->setContentsMargins(5, 1, 5, 1);
+    // mainlayout->setSpacing(0);
+
+    // +++++++++++++++++ END COMMENTS +++++++++++++++++++++
 
     this->setLayout(mainlayout);
 
-    this->contentType_Notifier =
-        contentType_Value.addNotifier(std::function<void()>(
-            std::bind(DashboardWidget::propertyChanged, this)));
-    this->photoCoverage_Notifier =
-        photoCoverage_Value.addNotifier(std::function<void()>(
-            std::bind(DashboardWidget::propertyChanged, this)));
-    this->qualityType_Notifier =
-        qualityType_Value.addNotifier(std::function<void()>(
-            std::bind(DashboardWidget::propertyChanged, this)));
-    this->paperSize_Notifier =
-        paperSize_Value.addNotifier(std::function<void()>(
-            std::bind(DashboardWidget::propertyChanged, this)));
-    this->paperType_Notifier =
-        paperType_Value.addNotifier(std::function<void()>(
-            std::bind(DashboardWidget::propertyChanged, this)));
+    // this->contentType_Notifier =
+    //     contentType_Value.addNotifier(std::function<void()>(
+    //         std::bind(DashboardWidget::propertyChanged, this)));
+    // this->photoCoverage_Notifier =
+    //     photoCoverage_Value.addNotifier(std::function<void()>(
+    //         std::bind(DashboardWidget::propertyChanged, this)));
+    // this->qualityType_Notifier =
+    //     qualityType_Value.addNotifier(std::function<void()>(
+    //         std::bind(DashboardWidget::propertyChanged, this)));
+    // this->paperSize_Notifier =
+    //     paperSize_Value.addNotifier(std::function<void()>(
+    //         std::bind(DashboardWidget::propertyChanged, this)));
+    // this->paperType_Notifier =
+    //     paperType_Value.addNotifier(std::function<void()>(
+    //         std::bind(DashboardWidget::propertyChanged, this)));
 }
