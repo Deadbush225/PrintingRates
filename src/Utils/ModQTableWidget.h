@@ -62,7 +62,7 @@ class ModQTableWidget : public QTableWidget {
     int updateTotal();
 
     void addNewRow();
-    void mapChange();
+    void deleteSelectedRow();
 };
 
 #endif

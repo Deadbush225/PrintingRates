@@ -47,6 +47,11 @@ DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent) {
     QObject::connect(addNew_btn, &QPushButton::clicked, this->tb,
                      &ModQTableWidget::addNewRow);
 
+    QPushButton* remRow_btn = new QPushButton("Remove Selected Rows");
+
+    QObject::connect(remRow_btn, &QPushButton::clicked, this->tb,
+                     &ModQTableWidget::deleteSelectedRow);
+
     QObject::connect(this->tb, &ModQTableWidget::totalComputed,
                      [this](int total) {
                          this->label->setText(QString("Price: %1").arg(total));
@@ -59,6 +64,7 @@ DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent) {
                      &DashboardWidget::calculate);
 
     mainlayout->addWidget(addNew_btn);
+    mainlayout->addWidget(remRow_btn);
     mainlayout->addWidget(this->tb);
 
     mainlayout->addWidget(this->label);

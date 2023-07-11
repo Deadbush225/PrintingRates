@@ -219,7 +219,21 @@ void ModQTableWidget::addNewRow() {
     qDebug() << "5" << this->contentType_Map.getKeys();
 }
 
-void ModQTableWidget::mapChange() {
-    qDebug() << "mapChanged: ++++++++++++++++++++++++++";
-    qDebug() << this->contentType_Map.getKeys();
+void ModQTableWidget::deleteSelectedRow() {
+    QList<int> indexes;
+
+    QModelIndexList selectedRows = this->selectedIndexes();
+    for (auto index : selectedRows) {
+        indexes.append(index.row());
+    }
+
+    std::sort(indexes.begin(), indexes.end());
+    qDebug() << indexes;
+    qDebug() << "Count: " << indexes.count();
+
+    for (int i = indexes.count() - 1; i >= 0; i--) {
+        qDebug() << "Iter: " << i;
+        qDebug() << "Row: " << indexes[i];
+        this->removeRow(indexes[i]);
+    }
 }
