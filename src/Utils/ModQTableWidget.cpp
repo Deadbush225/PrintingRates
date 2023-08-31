@@ -14,7 +14,7 @@ void ModQTableWidget::updatePrices() {
 }
 
 int ModQTableWidget::calculateRow(int row) {
-    qDebug() << "Calculating row..." << row;
+    // qDebug() << "Calculating row..." << row;
 
     int price = 0;
 
@@ -23,11 +23,11 @@ int ModQTableWidget::calculateRow(int row) {
     QString m_photoCoverage_Value =
         dynamic_cast<ModQComboBox*>(this->cellWidget(row, 1))->currentText();
 
-    qDebug() << "F: " << m_contentType_Value;
-    qDebug() << "F: " << m_photoCoverage_Value;
-    qDebug() << "F: " << this->photoCoverage_Options;
-    qDebug() << "F: "
-             << this->photoCoverage_Options.indexOf(m_photoCoverage_Value);
+    // qDebug() << "F: " << m_contentType_Value;
+    // qDebug() << "F: " << m_photoCoverage_Value;
+    // qDebug() << "F: " << this->photoCoverage_Options;
+    // qDebug() << "F: "
+    //          << this->photoCoverage_Options.indexOf(m_photoCoverage_Value);
 
     QString m_qualityType_Value =
         dynamic_cast<ModQComboBox*>(this->cellWidget(row, 2))->currentText();
@@ -40,31 +40,31 @@ int ModQTableWidget::calculateRow(int row) {
     int m_copyCount_Value =
         dynamic_cast<ModQSpinBox*>(this->cellWidget(row, 6))->value();
 
-    qDebug() << "contentType_Value";
-    qDebug() << "1" << this->contentType_Map.getKeys();
+    // qDebug() << "contentType_Value";
+    // qDebug() << "1" << this->contentType_Map.getKeys();
 
     int contentType_Value =
         this->contentType_Map[m_contentType_Value]
                              [this->photoCoverage_Options.indexOf(
                                  m_photoCoverage_Value)];
 
-    qDebug() << "qualityType_Value";
+    // qDebug() << "qualityType_Value";
     double qualityType_Value = qualityType_Map[m_qualityType_Value];
 
-    qDebug() << "paperSize_Value";
+    // qDebug() << "paperSize_Value";
     double paperSize_Value = paperSize_Map[m_paperSize_Value];
 
-    qDebug() << "paperType_Value";
+    // qDebug() << "paperType_Value";
     int paperType_Value = paperType_Map[m_paperType_Value];
 
-    qDebug() << "pricePerPage";
+    // qDebug() << "pricePerPage";
     int pricePerPage =
         ceil(contentType_Value * qualityType_Value * paperSize_Value +
              paperType_Value);
 
     price = pricePerPage * m_pageCount_Value * m_copyCount_Value;
 
-    qDebug() << price;
+    // qDebug() << price;
 
     // this->updatePrices();
 
@@ -73,9 +73,9 @@ int ModQTableWidget::calculateRow(int row) {
 }
 
 int ModQTableWidget::updateRowPrice(int row) {
-    qDebug() << "Calculating row" << row;
+    // qDebug() << "Calculating row" << row;
     int price = this->calculateRow(row);
-    qDebug() << price;
+    // qDebug() << price;
 
     QString st = QString::number(price);
 
@@ -92,11 +92,11 @@ int ModQTableWidget::updateTotal() {
 
     int total = 0;
 
-    qDebug() << "Total: ";
+    // qDebug() << "Total: ";
 
     for (int row = 0; row < rowCount; ++row) {
         total += this->item(row, 7)->text().toInt();
-        qDebug() << total;
+        // qDebug() << total;
     }
 
     emit totalComputed(total);
@@ -147,7 +147,7 @@ ModQTableWidget::ModQTableWidget(/* args */) : QTableWidget() {
 }
 
 void ModQTableWidget::addNewRow() {
-    qDebug() << "3" << this->contentType_Map.getKeys();
+    // qDebug() << "3" << this->contentType_Map.getKeys();
     int new_rowCount = this->rowCount() + 1;
     int rowCount = this->rowCount();
 
@@ -205,7 +205,7 @@ void ModQTableWidget::addNewRow() {
     QObject::connect(copyCount_spnbx, &ModQSpinBox::rowChanged, this,
                      &ModQTableWidget::updateRowPrice);
 
-    qDebug() << "4" << this->contentType_Map.getKeys();
+    // qDebug() << "4" << this->contentType_Map.getKeys();
     // LAYOUT
     this->setCellWidget(rowCount, 0, contentType_cmbx);
     this->setCellWidget(rowCount, 1, photoCoverage_cmbx);
@@ -216,7 +216,7 @@ void ModQTableWidget::addNewRow() {
     this->setCellWidget(rowCount, 6, copyCount_spnbx);
 
     this->updateRowPrice(rowCount);
-    qDebug() << "5" << this->contentType_Map.getKeys();
+    // qDebug() << "5" << this->contentType_Map.getKeys();
 }
 
 void ModQTableWidget::deleteSelectedRow() {
@@ -228,12 +228,12 @@ void ModQTableWidget::deleteSelectedRow() {
     }
 
     std::sort(indexes.begin(), indexes.end());
-    qDebug() << indexes;
-    qDebug() << "Count: " << indexes.count();
+    // qDebug() << indexes;
+    // qDebug() << "Count: " << indexes.count();
 
     for (int i = indexes.count() - 1; i >= 0; i--) {
-        qDebug() << "Iter: " << i;
-        qDebug() << "Row: " << indexes[i];
+        // qDebug() << "Iter: " << i;
+        // qDebug() << "Row: " << indexes[i];
         this->removeRow(indexes[i]);
     }
 }

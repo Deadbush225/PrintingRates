@@ -4,7 +4,6 @@
 
 template <typename K, typename V>
 V& ModQMap<K, V>::operator[](QString key) {
-    qDebug() << "appending: " << key;
     return (this->m_innerMap)[key];
 }
 

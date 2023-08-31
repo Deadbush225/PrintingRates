@@ -8,7 +8,7 @@
 #include <cmath>
 
 void DashboardWidget::calculate() {
-    qDebug() << "Called";
+    // qDebug() << "Called";
     tb->updatePrices();
 
     // int price = pricePerPage * pageCount_Value * copyCount_Value;
@@ -33,7 +33,7 @@ void DashboardWidget::calculate() {
 }
 
 void DashboardWidget::propertyChanged() {
-    qDebug() << "performing Live Calculation";
+    // qDebug() << "performing Live Calculation";
     if (this->performLiveCalculation) {
         calculate();
     }
@@ -41,6 +41,8 @@ void DashboardWidget::propertyChanged() {
 
 DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent) {
     auto mainlayout = new QVBoxLayout(this);
+
+    auto button_lyt = new QHBoxLayout();
 
     QPushButton* addNew_btn = new QPushButton("Add New Row");
 
@@ -52,24 +54,26 @@ DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent) {
     QObject::connect(remRow_btn, &QPushButton::clicked, this->tb,
                      &ModQTableWidget::deleteSelectedRow);
 
+    button_lyt->addWidget(addNew_btn);
+    button_lyt->addWidget(remRow_btn);
+
     QObject::connect(this->tb, &ModQTableWidget::totalComputed,
                      [this](int total) {
                          this->label->setText(QString("Price: %1").arg(total));
                      });
     this->tb->addNewRow();
 
-    QPushButton* calculate_btn = new QPushButton("Calculate");
+    // QPushButton* calculate_btn = new QPushButton("Calculate");
 
-    QObject::connect(calculate_btn, &QPushButton::clicked, this,
-                     &DashboardWidget::calculate);
+    // QObject::connect(calculate_btn, &QPushButton::clicked, this,
+    //  &DashboardWidget::calculate);
 
-    mainlayout->addWidget(addNew_btn);
-    mainlayout->addWidget(remRow_btn);
+    mainlayout->addLayout(button_lyt);
     mainlayout->addWidget(this->tb);
 
     mainlayout->addWidget(this->label);
 
-    mainlayout->addWidget(calculate_btn);
+    // mainlayout->addWidget(calculate_btn);
 
     // +++++++++++++++++ END TABLE WIDGET +++++++++++++++++++++
 
