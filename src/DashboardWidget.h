@@ -45,31 +45,7 @@ class DashboardWidget : public QWidget {
    public slots:
     void calculate();
 
-    // signals:
-    // void valueChanged(QString new_value);
-
    private:
-    // QProperty<QString> contentType_Value;
-    // QPropertyNotifier contentType_Notifier;
-
-    // QProperty<QString> photoCoverage_Value;
-    // QPropertyNotifier photoCoverage_Notifier;
-
-    // QProperty<QString> qualityType_Value;
-    // QPropertyNotifier qualityType_Notifier;
-
-    // QProperty<QString> paperSize_Value;
-    // QPropertyNotifier paperSize_Notifier;
-
-    // QProperty<QString> paperType_Value;
-    // QPropertyNotifier paperType_Notifier;
-
-    // QProperty<int> pageCount_Value;
-    // QPropertyNotifier pageCount_Notifier;
-
-    // QProperty<int> copyCount_Value;
-    // QPropertyNotifier copyCount_Notifier;
-
     ModQMap<QString, QList<int>> contentType_Map;
     QStringList photoCoverage_Options;
     ModQMap<QString, double> qualityType_Map;

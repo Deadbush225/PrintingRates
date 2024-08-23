@@ -13,7 +13,7 @@ void ModQTableWidget::updatePrices() {
     // emit totalComputed(total);
 }
 
-int ModQTableWidget::calculateRow(int row) {
+int ModQTableWidget::calculatePriceFromRow(int row) {
     // qDebug() << "Calculating row..." << row;
 
     int price = 0;
@@ -74,13 +74,12 @@ int ModQTableWidget::calculateRow(int row) {
 
 int ModQTableWidget::updateRowPrice(int row) {
     // qDebug() << "Calculating row" << row;
-    int price = this->calculateRow(row);
+    int price = this->calculatePriceFromRow(row);
     // qDebug() << price;
 
-    QString st = QString::number(price);
-
-    QTableWidgetItem* newItem = new QTableWidgetItem(st);
-    this->setItem(row, 7, newItem);
+    QString price_Qstr = QString::number(price);
+    QLabel* lbl = dynamic_cast<QLabel*>(this->cellWidget(row, 7));
+    lbl->setText(price_Qstr);
 
     this->updateTotal();
 
@@ -95,7 +94,8 @@ int ModQTableWidget::updateTotal() {
     // qDebug() << "Total: ";
 
     for (int row = 0; row < rowCount; ++row) {
-        total += this->item(row, 7)->text().toInt();
+        // total += this->item(row, 7)->text().toInt();
+        total += dynamic_cast<QLabel*>(this->cellWidget(row, 7))->text().toInt();
         // qDebug() << total;
     }
 
@@ -147,7 +147,6 @@ ModQTableWidget::ModQTableWidget(/* args */) : QTableWidget() {
 }
 
 void ModQTableWidget::addNewRow() {
-    // qDebug() << "3" << this->contentType_Map.getKeys();
     int new_rowCount = this->rowCount() + 1;
     int rowCount = this->rowCount();
 
@@ -155,14 +154,12 @@ void ModQTableWidget::addNewRow() {
     this->insertRow(this->rowCount());
 
     // CONTENT TYPE
-    // auto contentType_cmbx = new ModQComboBox(&(this->contentType_Value));
     auto contentType_cmbx = new ModQComboBox();
     contentType_cmbx->populate(contentType_Map.getKeys(), rowCount, 2);
     QObject::connect(contentType_cmbx, &ModQComboBox::rowChanged, this,
                      &ModQTableWidget::updateRowPrice);
 
     // PHOTO COVERAGE
-    // auto photoCoverage_cmbx = new ModQComboBox(&(this->photoCoverage_Value));
     auto photoCoverage_cmbx = new ModQComboBox();
     photoCoverage_cmbx->populate(photoCoverage_Options, rowCount, 0);
     QObject::connect(photoCoverage_cmbx, &ModQComboBox::rowChanged, this,
@@ -206,6 +203,9 @@ void ModQTableWidget::addNewRow() {
                      &ModQTableWidget::updateRowPrice);
 
     // qDebug() << "4" << this->contentType_Map.getKeys();
+
+    QLabel* rowPrice = new QLabel();
+
     // LAYOUT
     this->setCellWidget(rowCount, 0, contentType_cmbx);
     this->setCellWidget(rowCount, 1, photoCoverage_cmbx);
@@ -214,9 +214,9 @@ void ModQTableWidget::addNewRow() {
     this->setCellWidget(rowCount, 4, paperType_cmbx);
     this->setCellWidget(rowCount, 5, pageCount_spnbx);
     this->setCellWidget(rowCount, 6, copyCount_spnbx);
+    this->setCellWidget(rowCount, 7, rowPrice);
 
     this->updateRowPrice(rowCount);
-    // qDebug() << "5" << this->contentType_Map.getKeys();
 }
 
 void ModQTableWidget::deleteSelectedRow() {
@@ -236,4 +236,6 @@ void ModQTableWidget::deleteSelectedRow() {
         // qDebug() << "Row: " << indexes[i];
         this->removeRow(indexes[i]);
     }
+
+    this->updateTotal();
 }
