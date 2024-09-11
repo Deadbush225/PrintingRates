@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Printing Rates</Name>
+    <Version>1.0.0</Version>
+    <Title>Printing Rates Installer</Title>
+    <Publisher>deadbush25</Publisher>
+    <StartMenuDir>Printing Rates</StartMenuDir>
+    <TargetDir>@ApplicationsDirX64@/Printing Rates</TargetDir>
+</Installer>
