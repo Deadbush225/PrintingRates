@@ -39,6 +39,8 @@ set(SOURCE_FILES
 # add_executable(PrintingRates main.cpp DashboardWidget.cpp)
 #---
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} resource.qrc)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "Printing Rates")
 # include_directories("src/Utils" "Utils/")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
@@ -62,36 +64,38 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
 # set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 # include(CPack)
 
-### TEST
-message(install_bindir="${CMAKE_INSTALL_BINDIR}")
+### --- DEFAULT
+# message(install_bindir="${CMAKE_INSTALL_BINDIR}")
 
-install(TARGETS ${PROJECT_NAME} BUNDLE DESTINATION . RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+# install(TARGETS ${PROJECT_NAME} BUNDLE DESTINATION . RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-qt_generate_deploy_app_script(
-    TARGET ${PROJECT_NAME} OUTPUT_SCRIPT deploy_script NO_TRANSLATIONS
-)
-
-message(deploy_script="${deploy_script}")
-
-install(SCRIPT ${deploy_script})
-
-### END TEST
-
-# if(APPLE)
-#   set(executable_path "$<TARGET_FILE_NAME:${PROJECT_NAME}>.app")
-# else()
-#   set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>")
-# endif()
-
-# set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${PROJECT_NAME}.cmake")
-
-# file(GENERATE OUTPUT ${deploy_script} CONTENT "
-# include(\"${QT_DEPLOY_SUPPORT}\")
-# qt_deploy_runtime_dependencies(
-#     EXECUTABLE \"${executable_path}\"
-#     PLUGINS_DIR bin
-# )"
+# qt_generate_deploy_app_script(
+#     TARGET ${PROJECT_NAME} OUTPUT_SCRIPT deploy_script NO_TRANSLATIONS
 # )
 
-# install(TARGETS ${MY_APP} DESTINATION bin)
+# message(deploy_script="${deploy_script}")
+
 # install(SCRIPT ${deploy_script})
+
+### ----
+
+if(APPLE)
+    set(executable_path "$<TARGET_FILE_NAME:${PROJECT_NAME}>.app")
+elseif(WIN32)
+    set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>")
+else()
+    set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>")
+endif()
+
+set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${PROJECT_NAME}.cmake")
+
+file(GENERATE OUTPUT ${deploy_script} CONTENT "
+include(\"${QT_DEPLOY_SUPPORT}\")
+qt_deploy_runtime_dependencies(
+    EXECUTABLE \"${executable_path}\"
+    PLUGINS_DIR bin
+)"
+)
+
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+install(SCRIPT ${deploy_script})

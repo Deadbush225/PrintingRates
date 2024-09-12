@@ -8,7 +8,7 @@
         <License name="Beer Public License Agreement" file="license.txt" />
     </Licenses>
     <Default>script</Default>
-    <!-- <Script>installscript.qs</Script> -->
+    <Script>AddMenuShortcut.qs</Script>
     <UserInterfaces>
         <UserInterface>page.ui</UserInterface>
     </UserInterfaces>
