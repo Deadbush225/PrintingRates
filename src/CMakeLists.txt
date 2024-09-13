@@ -38,8 +38,9 @@ set(SOURCE_FILES
 # qt_add_executable(photosurfaceexample main.cpp ${app_icon_resource_windows})
 # add_executable(PrintingRates main.cpp DashboardWidget.cpp)
 #---
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} resource.qrc)
 
+set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/icons/Printing Rates.rc")
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${app_icon_resource_windows} icons/resource.qrc)
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "Printing Rates")
 # include_directories("src/Utils" "Utils/")
 

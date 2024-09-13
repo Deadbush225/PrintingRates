@@ -11,7 +11,7 @@ int main(int argc, char* arg[]) {
     auto app = QApplication(argc, arg);
 
     QApplication::setStyle("Fusion");
-    QApplication::setWindowIcon(QIcon(":/Icons/icon.ico"));
+    QApplication::setWindowIcon(QIcon(":/Icons/Rephraser.png"));
 
     // # Now use a palette to switch to dark colors:
     QPalette* dark_palette = new QPalette();

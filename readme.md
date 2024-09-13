@@ -3,8 +3,7 @@
 - Standardized print job calculator
 
 <p align="center" width="100%">
-<img src="./docs/Printing Rates.png" alt="logo"/>
-<!-- ![](/docs/Printing%20Rates.png) -->
+    <img src="./docs/Printing Rates.png" alt="logo"/>
 </p>
 
 ## Compatibility

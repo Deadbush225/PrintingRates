@@ -5,5 +5,7 @@
     <Title>Printing Rates Installer</Title>
     <Publisher>deadbush25</Publisher>
     <StartMenuDir>Printing Rates</StartMenuDir>
+    <InstallerWindowIcon>../src/icons/Printing Rates.png</InstallerWindowIcon>
+    <InstallerApplicationIcon>../src/icons/Printing Rates</InstallerApplicationIcon>
     <TargetDir>@ApplicationsDirX64@/Printing Rates</TargetDir>
 </Installer>
