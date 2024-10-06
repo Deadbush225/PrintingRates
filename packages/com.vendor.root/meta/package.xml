@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>Download Sorter</DisplayName>
     <Description>Main program</Description>
-    <Version>0.1.0-1</Version>
+    <Version>0.0.1</Version>
     <ReleaseDate>2019-09-21</ReleaseDate>
     <Licenses>
         <License name="Beer Public License Agreement" file="license.txt" />
