@@ -120,6 +120,7 @@ ModQTableWidget::ModQTableWidget(/* args */) : QTableWidget() {
     //     std::function<void()>(std::bind(ModQTableWidget::mapChange, this)));
 
     // CONSTANTS
+    // MOVE THIS TO SETTINGS MANIPULATOR
     this->contentType_Map["Photo"] = QList<int>({10, 9, 8, 7, 6, 6});
     this->contentType_Map["Text"] = QList<int>({5, 5, 4, 4, 3, 3});
     this->contentType_Map["Text \\w Photo"] = QList<int>({8, 7, 6, 5, 4, 4});

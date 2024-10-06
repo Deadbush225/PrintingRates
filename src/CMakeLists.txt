@@ -1,5 +1,3 @@
-
-
 cmake_minimum_required(VERSION 3.16)
 project(PrintingRates VERSION 0.1.0)
 
@@ -22,15 +20,14 @@ qt_standard_project_setup()
 
 file(GLOB_RECURSE UTILS "*.cpp")
 file(GLOB_RECURSE HEADER "*.h")
+file(GLOB_RECURSE InstallerConfigs "../config/*.*")
+file(GLOB_RECURSE Packages "../packages/*.*")
 
 set(SOURCE_FILES
     ${UTILS}
     ${HEADER}
-    # main.cpp
-    # DashboardWidget.cpp
-    # ModQMap.cpp
-    # ModQComboBox.cpp
-    # FixedLabel.cpp
+    ${InstallerConfigs}
+    ${Packages}
     )
 
 # set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/resources/photosurface.rc")
@@ -86,6 +83,7 @@ elseif(WIN32)
     set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>")
 else()
     set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>")
+    set(STATUS "UNIX Based SYSTEM")
 endif()
 
 set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${PROJECT_NAME}.cmake")

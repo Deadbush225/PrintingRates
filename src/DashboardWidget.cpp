@@ -43,8 +43,8 @@ DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent) {
 
     QPushButton* calculate_btn = new QPushButton("Calculate");
 
-    QObject::connect(calculate_btn, &QPushButton::clicked, this,
-     &DashboardWidget::calculate);
+    // QObject::connect(calculate_btn, &QPushButton::clicked, this,
+    //  &DashboardWidget::calculate);
 
     mainlayout->addLayout(button_lyt);
     mainlayout->addWidget(this->tb);

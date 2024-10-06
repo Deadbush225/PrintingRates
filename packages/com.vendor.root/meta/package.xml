@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>Printing Rates</DisplayName>
+    <DisplayName>Download Sorter</DisplayName>
     <Description>Main program</Description>
     <Version>0.1.0-1</Version>
     <ReleaseDate>2019-09-21</ReleaseDate>
