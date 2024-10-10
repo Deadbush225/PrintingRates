@@ -1,5 +1,6 @@
 #ifndef UTILS_MODQTABLEWIDGET
 #define UTILS_MODQTABLEWIDGET
+
 #include <QtCore/QProperty>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QPushButton>
@@ -12,6 +13,7 @@
 #include "ModQComboBox.h"
 #include "ModQMap.h"
 #include "ModQSpinBox.h"
+#include "Settings.h"
 
 class ModQTableWidget : public QTableWidget {
     Q_OBJECT
@@ -19,18 +21,12 @@ class ModQTableWidget : public QTableWidget {
    signals:
     void totalComputed(int total);
 
-   private:
-    ModQMap<QString, QList<int>> contentType_Map = {};
-    // QProperty<QMap<QString, QList<int>>> contentType_Map;
-    QStringList photoCoverage_Options;
-    ModQMap<QString, double> qualityType_Map;
-    ModQMap<QString, double> paperSize_Map;
-    ModQMap<QString, int> paperType_Map;
-
     /* data */
    public:
     ModQTableWidget(/* args */);
     virtual ~ModQTableWidget() = default;
+
+    Settings* settings = new Settings();
 
     void updatePrices();
     int calculatePriceFromRow(int row);

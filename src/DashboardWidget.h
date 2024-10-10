@@ -13,6 +13,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDebug>
+#include <QDialog>
 #include <QFont>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -22,6 +23,7 @@
 #include <QProperty>
 #include <QPropertyNotifier>
 #include <QPushButton>
+#include <QSettings>
 #include <QSizePolicy>
 #include <QSpacerItem>
 #include <QSpinBox>
@@ -44,6 +46,7 @@ class DashboardWidget : public QWidget {
 
    public slots:
     void calculate();
+    void openChangeDialog();
 
    private:
     ModQMap<QString, QList<int>> contentType_Map;

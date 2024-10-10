@@ -41,5 +41,6 @@ int main(int argc, char* arg[]) {
     // w.setStyleSheet(
     // "*{ border: 1px solid black;} QLabel { padding: 0 0 0 0px; }");
 
-    app.exec();
+    auto ret = app.exec();
+    return ret;
 }

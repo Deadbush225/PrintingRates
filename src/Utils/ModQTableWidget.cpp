@@ -44,18 +44,18 @@ int ModQTableWidget::calculatePriceFromRow(int row) {
     // qDebug() << "1" << this->contentType_Map.getKeys();
 
     int contentType_Value =
-        this->contentType_Map[m_contentType_Value]
-                             [this->photoCoverage_Options.indexOf(
+        this->settings->contentType_Map[m_contentType_Value]
+                             [this->settings->photoCoverage_Options.indexOf(
                                  m_photoCoverage_Value)];
 
     // qDebug() << "qualityType_Value";
-    double qualityType_Value = qualityType_Map[m_qualityType_Value];
+    double qualityType_Value = settings->qualityType_Map[m_qualityType_Value];
 
     // qDebug() << "paperSize_Value";
-    double paperSize_Value = paperSize_Map[m_paperSize_Value];
+    double paperSize_Value = settings->paperSize_Map[m_paperSize_Value];
 
     // qDebug() << "paperType_Value";
-    int paperType_Value = paperType_Map[m_paperType_Value];
+    int paperType_Value = settings->paperType_Map[m_paperType_Value];
 
     // qDebug() << "pricePerPage";
     int pricePerPage =
@@ -121,30 +121,7 @@ ModQTableWidget::ModQTableWidget(/* args */) : QTableWidget() {
 
     // CONSTANTS
     // MOVE THIS TO SETTINGS MANIPULATOR
-    this->contentType_Map["Photo"] = QList<int>({10, 9, 8, 7, 6, 6});
-    this->contentType_Map["Text"] = QList<int>({5, 5, 4, 4, 3, 3});
-    this->contentType_Map["Text \\w Photo"] = QList<int>({8, 7, 6, 5, 4, 4});
-
-    this->photoCoverage_Options =
-        QStringList({"Full", "5/6", "4/6", "Half", "2/6", "1/6"});
-
-    this->qualityType_Map["Draft"] = 0.4;
-    this->qualityType_Map["Standard"] = 1;
-    this->qualityType_Map["Standard-Vivid"] = 1.3;
-    this->qualityType_Map["High"] = 1.7;
-
-    this->paperSize_Map["Short"] = 1;
-    this->paperSize_Map["A4"] = 1.1;
-    this->paperSize_Map["Long"] = 1.2;
-
-    this->paperType_Map["Plain"] = 0;
-    this->paperType_Map["Colored Paper"] = 1;
-    this->paperType_Map["Sticker Paper"] = 10;
-    this->paperType_Map["Matte"] = 8;
-    this->paperType_Map["Ultra Glossy"] = 25;
-    this->paperType_Map["Premium Glossy"] = 25;
-    this->paperType_Map["Premium Semigloss"] = 25;
-    this->paperType_Map["Photo Paper Glossy"] = 20;
+    // Settings* settings = new Settings();
 }
 
 void ModQTableWidget::addNewRow() {
@@ -156,34 +133,34 @@ void ModQTableWidget::addNewRow() {
 
     // CONTENT TYPE
     auto contentType_cmbx = new ModQComboBox();
-    contentType_cmbx->populate(contentType_Map.getKeys(), rowCount, 2);
+    contentType_cmbx->populate(settings->contentType_Map.getKeys(), rowCount, 2);
     QObject::connect(contentType_cmbx, &ModQComboBox::rowChanged, this,
                      &ModQTableWidget::updateRowPrice);
 
     // PHOTO COVERAGE
     auto photoCoverage_cmbx = new ModQComboBox();
-    photoCoverage_cmbx->populate(photoCoverage_Options, rowCount, 0);
+    photoCoverage_cmbx->populate(settings->photoCoverage_Options, rowCount, 0);
     QObject::connect(photoCoverage_cmbx, &ModQComboBox::rowChanged, this,
                      &ModQTableWidget::updateRowPrice);
 
     // QUALITY TYPE
     // auto qualityType_cmbx = new ModQComboBox(&(this->qualityType_Value));
     auto qualityType_cmbx = new ModQComboBox();
-    qualityType_cmbx->populate(qualityType_Map.getKeys(), rowCount, 1);
+    qualityType_cmbx->populate(settings->qualityType_Map.getKeys(), rowCount, 1);
     QObject::connect(qualityType_cmbx, &ModQComboBox::rowChanged, this,
                      &ModQTableWidget::updateRowPrice);
 
     // PAPER SIZE
     // auto paperSize_cmbx = new ModQComboBox(&(this->paperSize_Value));
     auto paperSize_cmbx = new ModQComboBox();
-    paperSize_cmbx->populate(paperSize_Map.getKeys(), rowCount, 1);
+    paperSize_cmbx->populate(settings->paperSize_Map.getKeys(), rowCount, 1);
     QObject::connect(paperSize_cmbx, &ModQComboBox::rowChanged, this,
                      &ModQTableWidget::updateRowPrice);
 
     // PAPER TYPE
     // auto paperType_cmbx = new ModQComboBox(&(this->paperType_Value));
     auto paperType_cmbx = new ModQComboBox();
-    paperType_cmbx->populate(paperType_Map.getKeys(), rowCount, 0);
+    paperType_cmbx->populate(settings->paperType_Map.getKeys(), rowCount, 0);
     QObject::connect(paperType_cmbx, &ModQComboBox::rowChanged, this,
                      &ModQTableWidget::updateRowPrice);
 
@@ -240,3 +217,4 @@ void ModQTableWidget::deleteSelectedRow() {
 
     this->updateTotal();
 }
+

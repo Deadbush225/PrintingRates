@@ -22,12 +22,15 @@ file(GLOB_RECURSE UTILS "*.cpp")
 file(GLOB_RECURSE HEADER "*.h")
 file(GLOB_RECURSE InstallerConfigs "../config/*.*")
 file(GLOB_RECURSE Packages "../packages/*.*")
+file(GLOB_RECURSE Scripts "../*.ps1")
 
 set(SOURCE_FILES
     ${UTILS}
+
     ${HEADER}
     ${InstallerConfigs}
     ${Packages}
+    ${Scripts}
     )
 
 # set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/resources/photosurface.rc")
@@ -37,7 +40,8 @@ set(SOURCE_FILES
 #---
 
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/icons/Printing Rates.rc")
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${app_icon_resource_windows} icons/resource.qrc)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${app_icon_resource_windows} icons/resource.qrc
+    settings.ini)
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "Printing Rates")
 # include_directories("src/Utils" "Utils/")
 

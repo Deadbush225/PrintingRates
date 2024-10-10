@@ -43,6 +43,9 @@ DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent) {
 
     QPushButton* calculate_btn = new QPushButton("Calculate");
 
+    QPushButton* settings_btn = new QPushButton("Update Settings");
+    QObject::connect(settings_btn, &QPushButton::clicked, this, &DashboardWidget::openChangeDialog);
+
     // QObject::connect(calculate_btn, &QPushButton::clicked, this,
     //  &DashboardWidget::calculate);
 
@@ -50,5 +53,25 @@ DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent) {
     mainlayout->addWidget(this->tb);
     mainlayout->addWidget(this->label);
     mainlayout->addWidget(calculate_btn);
+    mainlayout->addWidget(settings_btn);
     this->setLayout(mainlayout);
 }
+
+void DashboardWidget::openChangeDialog() {
+    // QDialog* changeDialog = new QDialog(this);
+
+    // QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    // changeDialog->setLayout(mainLayout);
+
+    // QHBoxLayout* qualityTypeBox = new QHBoxLayout(this);
+    // QLabel* qualityTypeLabel = new QLabel();
+    // ModQComboBox* qualityTypeCmbx = new ModQComboBox();
+
+    // qualityTypeBox->addWidget(qualityTypeLabel);
+    // qualityTypeBox->addWidget(qualityTypeCmbx);
+
+    // mainLayout->addLayout(qualityTypeBox);
+
+    // changeDialog->exec();
+}
+
