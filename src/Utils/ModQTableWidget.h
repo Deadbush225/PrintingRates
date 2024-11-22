@@ -3,10 +3,10 @@
 
 #include <QtCore/QProperty>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QTableWidget>
-#include <QtWidgets/QLabel>
 
 #include <QtCore/QDebug>
 
@@ -26,7 +26,8 @@ class ModQTableWidget : public QTableWidget {
     ModQTableWidget(/* args */);
     virtual ~ModQTableWidget() = default;
 
-    Settings* settings = new Settings();
+    // Settings* settings = new Settings();
+    ModQSettings* mSettings = new ModQSettings();
 
     void updatePrices();
     int calculatePriceFromRow(int row);
@@ -39,4 +40,4 @@ class ModQTableWidget : public QTableWidget {
     void deleteSelectedRow();
 };
 
-#endif // UTILS_MODQTABLEWIDGET
+#endif  // UTILS_MODQTABLEWIDGET

@@ -18,19 +18,24 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Core)
 qt_standard_project_setup()
 
-file(GLOB_RECURSE UTILS "*.cpp")
-file(GLOB_RECURSE HEADER "*.h")
-file(GLOB_RECURSE InstallerConfigs "../config/*.*")
-file(GLOB_RECURSE Packages "../packages/*.*")
-file(GLOB_RECURSE Scripts "../*.ps1")
+# file(GLOB_RECURSE UTILS "*.cpp")
+# file(GLOB_RECURSE HEADER "*.h")
+# file(GLOB_RECURSE InstallerConfigs "../config/*.*")
+# file(GLOB_RECURSE Packages "../packages/*.*")
+# file(GLOB_RECURSE Scripts "../*.ps1")
 
 set(SOURCE_FILES
-    ${UTILS}
-
-    ${HEADER}
-    ${InstallerConfigs}
-    ${Packages}
-    ${Scripts}
+    # ${UTILS}
+    "main.cpp"
+    # "./Utils/ModQMap.cpp"
+    # "./Utils/Settings.cpp"
+    "./Utils/ModOrderedMap.cpp"
+    # "./Utils/ModOrderedMap.h"
+    # "./Utils/errorhdlr.cpp"
+    # ${HEADER}
+    # ${InstallerConfigs}
+    # ${Packages}
+    # ${Scripts}
     )
 
 # set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/resources/photosurface.rc")
@@ -49,10 +54,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
     set_property(TARGET ${PROJECT_NAME} PROPERTY WIN32_EXECUTABLE true)
 endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE "src/Utils/")
-# add_executable(Testsd ${SOURCE_FILES})
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
-
+# target_include_directories(${PROJECT_NAME} PRIVATE "src/Utils/")
+# # add_executable(Testsd ${SOURCE_FILES})
+# target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
+# target_precompile_headers(${PROJECT_NAME} PRIVATE "./Utils/pch.h" "./Utils/FixedLabel.h" "./Utils/ModQComboBox.h" "./Utils/ModQMap.h" "./Utils/ModQSpinBox.h" "./Utils/ModQTableWidget.h")
 
 #---
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets)
