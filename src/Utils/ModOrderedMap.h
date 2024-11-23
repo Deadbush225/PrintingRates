@@ -12,7 +12,7 @@
 #include <stdexcept>
 #include "errorhdlr.cpp"
 
-QVariantMap serializeJSON(QJsonObject object);
+// QVariantMap serializeJSON(QJsonObject object);
 
 template <typename Value>
 class ModOrderedMap {

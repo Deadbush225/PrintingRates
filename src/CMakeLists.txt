@@ -30,6 +30,7 @@ set(SOURCE_FILES
     # "./Utils/ModQMap.cpp"
     # "./Utils/Settings.cpp"
     "./Utils/ModOrderedMap.cpp"
+    "./Utils/JsonSettings.cpp"
     # "./Utils/ModOrderedMap.h"
     # "./Utils/errorhdlr.cpp"
     # ${HEADER}

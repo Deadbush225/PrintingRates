@@ -10,6 +10,7 @@
 
 #include <QtCore/QDebug>
 
+#include "JsonSettings.h"
 #include "ModQComboBox.h"
 #include "ModQMap.h"
 #include "ModQSpinBox.h"
@@ -26,7 +27,9 @@ class ModQTableWidget : public QTableWidget {
     ModQTableWidget(/* args */);
     virtual ~ModQTableWidget() = default;
 
-    // Settings* settings = new Settings();
+    // JsonSettings* Jsonsettings = new JsonSettings();
+    // QVariantMap* mSettings = Jsonsettings->LoadJson();
+
     ModQSettings* mSettings = new ModQSettings();
 
     void updatePrices();

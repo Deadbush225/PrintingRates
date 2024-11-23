@@ -12,6 +12,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include "Utils/JsonSettings.h"
 #include "utils/ModOrderedMap.h"
 #include "utils/errorhdlr.cpp"
 // #include "DashboardWidget.h"
@@ -80,59 +81,53 @@ int main(int argc, char* arg[]) {
     // ModQSettings* e = new ModQSettings();
 
     // qDebug() << (*e)["Content Type"];
-    QString jsonFilePath =
-        "C:/system/coding/Projects/printing-rates/src/config.json";
-    QFile file(jsonFilePath);
 
-    if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
-        qWarning() << "Could not open the file!";
-        return -1;
-    }
+    // -> Create an easy way to access these values
+    JsonSettings* settings = new JsonSettings();
 
-    // QList<QPair<QString, QVariant>> orderedMap;
-    // readJsonFile(file, orderedMap);
-    // file.close();
-    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-    file.close();
+    EVariantMap* settingsVariant = settings->LoadJson();
 
-    qDebug() << doc << "\n";
-    // qDebug() << doc.object();
-    // qDebug() << doc.object()["Content Type"][1];
+    ModOrderedMap<QString>* e = (*settingsVariant).getDict("Content Type");
+    // ModOrderedMap<QString>::fromVariant((*settingsVariant)["Content Type"]);
 
-    // for (const QPair<QString, QVariant>& pair : orderedMap) {
-    //     qDebug() << pair.first << ":" << pair.second.toString();
+    // if (e == nullptr) {
+    //     qDebug() << "NULLPTR";
+    //     exit(1);
     // }
 
-    QVariantMap settingsVariant = serializeJSON(doc.object());
+    qDebug() << "E: " << (*e) << "\n";
+    // qDebug() << "E[\"Photo\"]: " << (*e)["Photo"] << "\n";
+    // qDebug() << "Value of \"Photo\"" << (*e).value("Photo");
+    // (*e).insert("Photo3", "test");
+    // qDebug() << "Value of \"Photo3\"" << (*e).value("Photo3");
 
-    qDebug() << "Returned QVariant: " << settingsVariant << "\n";
-
-    ModOrderedMap<QString> e =
-        ModOrderedMap<QString>::fromVariant(settingsVariant["Content Type"]);
-
-    qDebug() << e << "\n";
-
-    qDebug() << e.value("Photo");
-
-    qDebug() << "T" << "\n";
-
-    // QList<QString> i =
-    // qDebug() << settingsVariant["Page Coverage"].toStringList();
-    // auto var = settingsVariant["Page Coverage"].toStringList();
+    // QStringList var = settingsVariant["Page Coverage"].toStringList();
     // var.append("Test");
     // settingsVariant["Page Coverage"] = var;
-    static_cast<QStringList*>(settingsVariant["Page Coverage"].data())
-        ->append("TEST");
+    auto r = (*settingsVariant).getStringList("Page Coverage");
+
+    qDebug() << *r;
+    if (r == nullptr) {
+        qDebug() << "NULLPTR";
+        exit(1);
+    }
+
+    qDebug() << static_cast<QStringList*>(
+        (*settingsVariant)["Page Coverage"].data());
+
+    auto star =
+        static_cast<QStringList*>((*settingsVariant)["Page Coverage"].data());
+    star->append("TEST");
+    //     ->append("TEST");
+
+    // auto st = (*settingsVariant).getStringList("Page Coverage");
+    qDebug() << *star;
+    // qDebug() << (*st);
+    // (*settingsVariant).getStringList("Page Coverage")->append("Test");
     qDebug() << "U" << "\n";
 
-    // QStringList& sl = *var.data<QStringList>();
-    // sl.append("Test");
-    // qDebug() << "Contents of myStringList:";
-    // settingsVariant["Page Coverage"].value<QStringList>().append("TEst");
-    // QStringList* stringListPtr =
-
-    // settingsVariant["Page
-    // Coverage"].value<QStringList*>()->append("TEST");
+    // QStringList* stringListPtr = settingsVariant["Page
+    // Coverage"].value<QStringList*>();
 
     // if (stringListPtr) {
     //     qDebug() << "ADDING";
@@ -140,64 +135,8 @@ int main(int argc, char* arg[]) {
     //     stringListPtr->append("newValue2");
     // }
 
-    qDebug() << settingsVariant["Page Coverage"].toStringList();
-
-    /* ------------------------------------------------------------ */
-
-    qDebug() << "Before Saving: " << settingsVariant << "\n";
-
-    // -> check for other way to initialize QJsonObject using our QVariantMap
-
-    // QJsonObject obj = QJsonObject::fromVariantMap(settingsVariant);
-
-    /* ---------------------------------------------------------------- */
-    QJsonObject obj;
-
-    // Iterate through the QVariantMap and insert into QJsonObject
-    for (auto it = settingsVariant.constBegin();
-         it != settingsVariant.constEnd(); ++it) {
-        QString key = it.key();
-        QVariant value = it.value();
-
-        // Check if the value is convertible to QJsonValue
-        if (value.canConvert<ModOrderedMap<QString>>()) {
-            ModOrderedMap<QString> map = value.value<ModOrderedMap<QString>>();
-            QJsonArray arr;
-
-            // Convert ModOrderedMap to QJsonObject
-            for (const auto& pair : map.list) {
-                QJsonObject obj;
-                obj.insert(pair.first, pair.second);
-                arr.append(obj);  // Assuming Value is QString or
-                                  // convertible to QJsonValue
-            }
-            obj.insert(key, arr);
-        } else if (value.canConvert<QStringList>()) {
-            obj.insert(
-                key, QJsonValue::fromVariant(
-                         value));  // Directly convert QStringList to QJsonValue
-        } else {
-            obj.insert(key, QJsonValue::fromVariant(
-                                value));  // General case for other types
-        }
-    }
-
-    /* ---------------------------------------------------------------- */
-
-    qDebug() << "Object: " << obj << "\n";
-    // QJsonDocument dc = QJsonDocument::fromVariant(settingsVariant);
-    QJsonDocument dc = QJsonDocument(obj);
-    qDebug() << "DC: " << dc;
-    // qDebug() << settingsVariant["Content Type"];
-    // qDebug() << toModOrderedMap(settingsVariant["Content
-    // Type"]).value("Photo");
-    QString jsonFilePathOut =
-        "C:/system/coding/Projects/printing-rates/src/config_out.json";
-
-    QFile fileout(jsonFilePathOut);
-    fileout.open(QIODevice::ReadWrite | QIODevice::Text);
-    fileout.write(dc.toJson());
-    fileout.close();
+    qDebug() << (*settingsVariant)["Page Coverage"].toStringList();
+    settings->saveJson();
     qDebug() << "TEST UPDATE";
 
     auto ret = app.exec();

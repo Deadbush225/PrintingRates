@@ -20,8 +20,6 @@
 
 // using QVarMap = std::variant<QVariant, QMap<QString, QVariant>>;
 
-// class
-
 template <typename T>
 class ModQList : public QList<T> {
    public:
