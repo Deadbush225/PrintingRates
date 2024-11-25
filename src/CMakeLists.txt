@@ -18,22 +18,24 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Core)
 qt_standard_project_setup()
 
-# file(GLOB_RECURSE UTILS "*.cpp")
-# file(GLOB_RECURSE HEADER "*.h")
+file(GLOB_RECURSE UTILS "*.cpp")
+file(GLOB_RECURSE HEADER "*.h")
 # file(GLOB_RECURSE InstallerConfigs "../config/*.*")
 # file(GLOB_RECURSE Packages "../packages/*.*")
 # file(GLOB_RECURSE Scripts "../*.ps1")
 
 set(SOURCE_FILES
-    # ${UTILS}
+    ${HEADER}
+    ${UTILS}
     "main.cpp"
+    # "./DashboardWidget.cpp"
+    # "./DashboardWidget.h"
     # "./Utils/ModQMap.cpp"
     # "./Utils/Settings.cpp"
     "./Utils/ModOrderedMap.cpp"
     "./Utils/JsonSettings.cpp"
     # "./Utils/ModOrderedMap.h"
     # "./Utils/errorhdlr.cpp"
-    # ${HEADER}
     # ${InstallerConfigs}
     # ${Packages}
     # ${Scripts}

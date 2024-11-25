@@ -13,7 +13,8 @@
 #include "EVariantMap.h"
 #include "ModOrderedMap.h"
 
-ModOrderedMap<QString> JsonArray_to_Map(QJsonArray arr);
+// ModOrderedMap<QString> JsonArray_to_Map(QJsonArray arr);
+ModOrderedMap<QVariant> JsonArray_to_Map(QJsonArray arr);
 EVariantMap serializeJSON(QJsonObject object);
 
 class JsonSettings {

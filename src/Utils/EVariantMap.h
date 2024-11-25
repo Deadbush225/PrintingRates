@@ -13,15 +13,6 @@ class EVariantMap : public QVariantMap {
    public:
     using QVariantMap::QVariantMap;  // Inherit constructors
 
-    // Method to get a value of type T
-    // template <typename T>
-    // T getValue(const QString& key, const T& defaultValue = T()) const {
-    //     if (contains(key)) {
-    //         return value(key).value<T>();  // Safely convert to T
-    //     }
-    //     return defaultValue;  // Return default if key doesn't exist
-    // }
-
     template <typename ValueType>
     ValueType* getValue(const QString& key) {
         if (!contains(key)) {
@@ -29,86 +20,33 @@ class EVariantMap : public QVariantMap {
             return nullptr;
         }
         QVariant variant = this->value(key);
+
         if (!variant.canConvert<ValueType>()) {
-            qDebug() << "UNABLE TO CONVERT TO" << typeid(ValueType).name();
+            qDebug() << "UNABLE TO CONVERT TO ModOrderedMap<QString>";
             return nullptr;
         }
+
+        // can't use (*this).value(key).data() for some reason
         return static_cast<ValueType*>((*this)[key].data());
-    }  // Specialization for QStringList
-    QStringList* getStringList(const QString& key) {
-        return getValue<QStringList>(key);
-    }  // Specialization
-    // for ModOrderedMap<QString>
-    ModOrderedMap<QString>* getDict(const QString& key) {
-        return getValue<ModOrderedMap<QString>>(key);
     }
 
-    // template <typename Value>
-    // Value* getValue(const QString& key) const {
-    //     if (!contains(key)) {
-    //         qDebug() << "KEY NOT FOUND";
-    //         return nullptr;
-    //     }
-    //     QVariant variant = this->value(key);
-
-    //     // if (!variant.canConvert<Value>()) {
-    //     //     // std::to_string(Value);
-    //     //     qDebug() << "UNABLE TO CONVERT TO ModOrderedMap<QString>";
-    //     //     return nullptr;
-    //     // }
-
-    //     // return static_cast<Value*>(variant.data());
-    //     return static_cast<Value*>((*this)[key].data());
-    //     // return value.value<Value>();  // Safely convert
-    //     // return static_cast<QStringList*>(
-    //     //     value.value<Value>());  // Safely convert
-    //     // return static_cast<Value*>(
-    //     // this->operator[](key).data());  // Safely convert
+    // you can use this shorthand to shorten calls for getDict and getStringList
+    // ModOrderedMap<QVariant>* operator[](QString key) {
+    //     return getValue<ModOrderedMap<QVariant>>(key);
     // }
-
-    // ModOrderedMap<QString>* getDict(const QString& key,
-    //                                 const ModOrderedMap<QString>
-    //                                 defaultValue
-    //                                 =
-    //                                     ModOrderedMap<QString>()) const {
-    //     return getValue<ModOrderedMap<QString>>(key, defaultValue);
-    // }
-
-    // QStringList* getStringList(const QString& key,
-    //                            const QStringList defaultValue =
-    //                            QStringList()) {
+    // QStringList* operator()(QString key) {
+    //     // return getStringList(key);
     //     return getValue<QStringList>(key);
     // }
 
-    // QStringList* getStringList(const QString& key) {
-    //     if (!contains(key)) {
-    //         qDebug() << "KEY NOT FOUND";
-    //         return nullptr;
-    //     }
-    //     QVariant variant = this->value(key);
+    ModOrderedMap<QVariant>* getDict(const QString& key) {
+        return getValue<ModOrderedMap<QVariant>>(key);
+    }
 
-    //     if (!variant.canConvert<QStringList>()) {
-    //         qDebug() << "UNABLE TO CONVERT TO QStringList";
-    //         return nullptr;
-    //     }
-
-    //     return static_cast<QStringList*>((*this)[key].data());
-    // }
-
-    // ModOrderedMap<QString>* getDict(const QString& key) {
-    //     if (!contains(key)) {
-    //         qDebug() << "KEY NOT FOUND";
-    //         return nullptr;
-    //     }
-    //     QVariant variant = this->value(key);
-
-    //     if (!variant.canConvert<ModOrderedMap<QString>>()) {
-    //         qDebug() << "UNABLE TO CONVERT TO ModOrderedMap<QString>";
-    //         return nullptr;
-    //     }
-
-    //     return static_cast<ModOrderedMap<QString>*>((*this)[key].data());
-    // }
+    QStringList* getStringList(const QString& key) {
+        qDebug() << key << "\n";
+        return getValue<QStringList>(key);
+    }
 
     // Overload for QString
     // QString getString(const QString& key, const QString& defaultValue =

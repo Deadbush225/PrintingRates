@@ -27,10 +27,11 @@ class ModQTableWidget : public QTableWidget {
     ModQTableWidget(/* args */);
     virtual ~ModQTableWidget() = default;
 
-    // JsonSettings* Jsonsettings = new JsonSettings();
+    JsonSettings* settings = new JsonSettings();
+    EVariantMap* m_settings = settings->LoadJson();
     // QVariantMap* mSettings = Jsonsettings->LoadJson();
 
-    ModQSettings* mSettings = new ModQSettings();
+    // ModQSettings* mSettings = new ModQSettings();
 
     void updatePrices();
     int calculatePriceFromRow(int row);

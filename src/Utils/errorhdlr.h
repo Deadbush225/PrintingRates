@@ -1,6 +1,6 @@
-// #ifndef EE
-// #define EE
+#ifndef EE
+#define EE
 
-// #define THROW_ERROR(msg)
+#define THROW_ERROR(msg)
 
-// #endif
+#endif
