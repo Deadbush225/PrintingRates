@@ -3,3 +3,4 @@ delete/
 .vscode/
 *Installer*
 *Setup*.exe
+*.exe
