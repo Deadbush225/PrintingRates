@@ -1,6 +1,4 @@
 build*/
 delete/
 .vscode/
-*Installer*
-*Setup*.exe
-*.exe
+/*.exe
