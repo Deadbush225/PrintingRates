@@ -20,25 +20,25 @@ qt_standard_project_setup()
 
 file(GLOB_RECURSE UTILS "*.cpp")
 file(GLOB_RECURSE HEADER "*.h")
-# file(GLOB_RECURSE InstallerConfigs "../config/*.*")
-# file(GLOB_RECURSE Packages "../packages/*.*")
-# file(GLOB_RECURSE Scripts "../*.ps1")
+file(GLOB_RECURSE InstallerConfigs "../config/*.*")
+file(GLOB_RECURSE Packages "../packages/*.*")
+file(GLOB_RECURSE Scripts "../*.ps1")
 
 set(SOURCE_FILES
     ${HEADER}
     ${UTILS}
     "main.cpp"
+    "./Utils/ModOrderedMap.cpp"
+    "./Utils/ModOrderedMap.h"
     # "./DashboardWidget.cpp"
     # "./DashboardWidget.h"
     # "./Utils/ModQMap.cpp"
     # "./Utils/Settings.cpp"
-    "./Utils/ModOrderedMap.cpp"
-    "./Utils/JsonSettings.cpp"
-    # "./Utils/ModOrderedMap.h"
+    # "./Utils/JsonSettings.cpp"
     # "./Utils/errorhdlr.cpp"
-    # ${InstallerConfigs}
-    # ${Packages}
-    # ${Scripts}
+    ${InstallerConfigs}
+    ${Packages}
+    ${Scripts}
     )
 
 # set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/resources/photosurface.rc")

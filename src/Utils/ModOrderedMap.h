@@ -1,4 +1,3 @@
-// #pragma once
 #ifndef MODORDEREDMAP
 #define MODORDEREDMAP
 
@@ -114,11 +113,6 @@ void ModOrderedMap<Value>::insert(QString key, Value value) {
     list.append(qMakePair(key, value));
 };
 
-// template <typename Value>
-// Value& ModOrderedMap<Value>::operator[](const QString& key) {
-//     return this->value(key);
-// }
-
 template <typename Value>
 QList<QString> ModOrderedMap<Value>::keys() const {
     return m_key;
@@ -133,17 +127,5 @@ QDebug operator<<(QDebug dbg, const ModOrderedMap<Value>& map) {
     dbg.nospace() << ")";
     return dbg;
 }
-
-/* ------------------------------------------------------------------------- */
-// template <typename Value>
-// class ModList : public QList<Value> {
-//    public:
-//     ModList<int> fromString(const QString& string);
-// };
-
-// template <>
-// ModList<int> ModList<int>::fromString(const QString& string) {}
-
-// ModList<int> toIntList(QVariant var);
 
 #endif
