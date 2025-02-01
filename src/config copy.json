@@ -4,8 +4,7 @@
 		{ "Text": "5, 5, 4, 4, 3, 3" },
 		{ "Text2": "5, 5, 4, 4, 3, 3" },
 		{ "TextwPhoto": "8, 7, 6, 5, 5, 4" },
-		{ "Photo": "1, 2, 3, 4, 5, 5" },
-		{ "Photo23": "1, 2, 3, 4, 5, 5" }
+		{ "Photo": "1, 2, 3, 4, 5, 5" }
 	],
 	"Page Coverage": ["1/6", "2/6", "Half", "4/6", "5/6", "Full"],
 	"Quality Type": [
@@ -22,7 +21,6 @@
 		{ "Matte": "15" },
 		{ "Ultra Glossy": "23" },
 		{ "Premium Semigloss": "23" },
-		{ "Photo Paper Glossy": "23" },
-		{ "Photo Paper Glossy 23": "23" }
+		{ "Photo Paper Glossy": "23" }
 	]
 }

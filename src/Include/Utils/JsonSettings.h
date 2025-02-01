@@ -1,6 +1,8 @@
 #ifndef JSON_SETTINGS
 #define JSON_SETTINGS
 
+#include <QCoreApplication>
+
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QString>
@@ -19,12 +21,55 @@ EVariantMap serializeJSON(QJsonObject object);
 class JsonSettings {
    private:
     EVariantMap settingsVariant;
+    std::string defaultContents = R"({
+	"Content Type": [
+		{ "Text3": "5, 5, 4, 4, 3, 3" },
+		{ "Text": "5, 5, 4, 4, 3, 3" },
+		{ "Text2": "5, 5, 4, 4, 3, 3" },
+		{ "TextwPhoto": "8, 7, 6, 5, 5, 4" },
+		{ "Photo": "1, 2, 3, 4, 5, 5" },
+		{ "Photo23": "1, 2, 3, 4, 5, 5" }
+	],
+	"Page Coverage": ["1/6", "2/6", "Half", "4/6", "5/6", "Full"],
+	"Quality Type": [
+		{ "Draft": "0.4" },
+		{ "Standard": "1" },
+		{ "Standard Vivid": "1.3" },
+		{ "High": "1.7" }
+	],
+	"Paper Size": [{ "Short": "1" }, { "A4": "1.1" }, { "Long": "1.2" }],
+	"Paper Type": [
+		{ "Plain": "1" },
+		{ "Colored Paper": "3" },
+		{ "Sticker Paper": "15" },
+		{ "Matte": "15" },
+		{ "Ultra Glossy": "23" },
+		{ "Premium Semigloss": "23" },
+		{ "Photo Paper Glossy": "23" },
+		{ "Photo Paper Glossy 23": "23" }
+	]
+})";
 
    public:
     EVariantMap* LoadJson() {
-        QString jsonFilePath =
-            "C:/system/coding/Projects/printing-rates/src/config.json";
-        QFile file(jsonFilePath);
+        QString relativeJsonFilePath =
+            QCoreApplication::applicationDirPath() + "/config.json";
+        QFile file(relativeJsonFilePath);
+
+        qDebug() << "TEST";
+        qDebug() << relativeJsonFilePath;
+
+        if (!file.exists()) {
+            qDebug() << "Creating configuration file";
+            if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                qWarning() << "Could not create the file!";
+                exit(-1);
+            }
+            qDebug() << "Writing into configuration file";
+            QTextStream out(&file);
+            out << QString::fromStdString(this->defaultContents);
+            file.close();
+        }
 
         if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
             qWarning() << "Could not open the file!";

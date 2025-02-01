@@ -8,7 +8,7 @@
     <InstallerWindowIcon>../src/icons/Printing Rates.png</InstallerWindowIcon>
     <InstallerApplicationIcon>../src/icons/Printing Rates</InstallerApplicationIcon>
     <TargetDir>@ApplicationsDirX64@/Printing Rates</TargetDir>
-    <MaintenanceToolName>Download Sorter MaintenanceTool</MaintenanceToolName>
+    <MaintenanceToolName>Printing Rates MaintenanceTool</MaintenanceToolName>
     <RemoteRepositories>
         <Repository>
             <Url>https://raw.githubusercontent.com/Deadbush225/DownloadSorter/main/repository</Url>

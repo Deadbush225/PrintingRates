@@ -1,5 +1,5 @@
-#include "Settings.h"
-#include "ModOrderedMap.h"
+#include "../Include/Utils/Settings.h"
+#include "../Include/Utils/ModOrderedMap.h"
 
 #include <vector>
 

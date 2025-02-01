@@ -1,9 +1,9 @@
 
-#include "DashboardWidget.h"
+#include "../Include/Utils/DashboardWidget.h"
 
-#include "Utils/FixedLabel.h"
-#include "Utils/ModQComboBox.h"
-#include "Utils/ModQMap.cpp"
+#include "../Include/Utils/FixedLabel.h"
+#include "../Include/Utils/ModQComboBox.h"
+#include "ModQMap.cpp"
 
 #include <cmath>
 
@@ -44,7 +44,8 @@ DashboardWidget::DashboardWidget(QWidget* parent) : QWidget(parent) {
     QPushButton* calculate_btn = new QPushButton("Calculate");
 
     QPushButton* settings_btn = new QPushButton("Update Settings");
-    QObject::connect(settings_btn, &QPushButton::clicked, this, &DashboardWidget::openChangeDialog);
+    QObject::connect(settings_btn, &QPushButton::clicked, this,
+                     &DashboardWidget::openChangeDialog);
 
     // QObject::connect(calculate_btn, &QPushButton::clicked, this,
     //  &DashboardWidget::calculate);
@@ -74,4 +75,3 @@ void DashboardWidget::openChangeDialog() {
 
     // changeDialog->exec();
 }
-

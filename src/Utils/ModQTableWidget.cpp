@@ -1,4 +1,4 @@
-#include "ModQTableWidget.h"
+#include "../Include/Utils/ModQTableWidget.h"
 #include "ModQMap.cpp"  // for the template
 
 void ModQTableWidget::updatePrices() {

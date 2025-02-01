@@ -12,12 +12,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-#include "DashboardWidget.h"
-#include "Utils/JsonSettings.h"
-#include "utils/ModOrderedMap.h"
-
-// #include "Utils/Settings.h"
-// #include "utils/errorhdlr.cpp"
+#include "Include/Utils/DashboardWidget.h"
+#include "Include/Utils/ModOrderedMap.h"
 
 Q_DECLARE_METATYPE(ModOrderedMap<QString>)
 
@@ -25,7 +21,7 @@ void setupDarkTheme() {
     QApplication::setStyle("Fusion");
     QApplication::setWindowIcon(QIcon(":/Icons/Printing Rates.png"));
 
-    // # Now use a palette to switch to dark colors:
+    // Now use a palette to switch to dark colors:
     QPalette* dark_palette = new QPalette();
     dark_palette->setColor(QPalette::Window, QColor(53, 53, 53));
     dark_palette->setColor(QPalette::WindowText, Qt::white);
@@ -52,52 +48,6 @@ void setupDarkTheme() {
     QApplication::setPalette(*dark_palette);
 }
 
-void settingsTest() {
-    /* ------------------------------------------------------------ */
-    // JsonSettings* settings = new JsonSettings();
-    // EVariantMap* settingsVariant = settings->LoadJson();
-
-    // ModOrderedMap<QVariant>* e = (*settingsVariant).getDict("Content Type");
-    // ModOrderedMap<QVariant>* e = (*settingsVariant).getDict("Paper Type");
-    // ModOrderedMap<QVariant>* f = (*settingsVariant).getDict("Quality Type");
-    // ModOrderedMap<QVariant>* e = (*settingsVariant).getDict("Content Type");
-    // ModOrderedMap<QVariant>* e = (*settingsVariant)["Content Type"];
-
-    // qDebug() << "E: " << (*e)["Text"].toStringList() << "\n";
-
-    // qDebug() << "E[\"Photo\"]: " << (*e) << "\n";
-    // qDebug() << "E[\"Photo\"]: " << (*f)["Draft"] << "\n";
-    // qDebug() << "E[\"Photo\"]: " << (*e)["Short"].value<double>() << "\n";
-
-    // qDebug() << "Value of \"Photo\"" << (*e).value("Photo");
-    // (*e).insert("Photo3", "test");
-    // qDebug() << "Value of \"Photo3\"" << (*e).value("Photo3");
-
-    // QStringList var = settingsVariant["Page Coverage"].toStringList();
-    // var.append("Test");
-    // settingsVariant["Page Coverage"] = var;
-
-    // auto r = (*settingsVariant).getStringList("Page Coverage");
-    // auto r = (*settingsVariant).getStringList("Page Coverage");
-    // auto r = (*settingsVariant)("Page Coverage");
-
-    // qDebug() << "L: " << r;
-    // qDebug() << "L: " << (*r);
-    // if (r == nullptr) {
-    //     qDebug() << "NULLPTR";
-    //     exit(1);
-    // }
-
-    // auto st = (*settingsVariant).getStringList("Page Coverage");
-
-    // (*settingsVariant).getStringList("Page Coverage")->append("Test");
-
-    // QStringList* stringListPtr = settingsVariant["Page
-    // Coverage"].value<QStringList*>();
-
-    // qDebug() << (*settingsVariant)["Page Coverage"].toStringList();
-}
-
 int main(int argc, char* arg[]) {
     qRegisterMetaType<ModOrderedMap<QString>>("ModOrderedMap<QString>");
 
@@ -108,12 +58,5 @@ int main(int argc, char* arg[]) {
     auto w = DashboardWidget();
     w.show();
 
-    // w.setStyleSheet(
-    // "*{ border: 1px solid black;} QLabel { padding: 0 0 0 0px; }");
-
-    settingsTest();
-
-    auto ret = app.exec();
-
-    return ret;
+    return app.exec();
 }

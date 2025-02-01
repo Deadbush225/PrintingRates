@@ -1,4 +1,4 @@
-#include "ModQSpinBox.h"
+#include "../Include/Utils/ModQSpinBox.h"
 
 ModQSpinBox::ModQSpinBox(int row) {
     // data validation

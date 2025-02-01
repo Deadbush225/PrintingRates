@@ -5,10 +5,10 @@
 #include <iomanip>
 #include <iostream>
 
-#include "Utils/FixedLabel.h"
-#include "Utils/ModQComboBox.h"
-#include "Utils/ModQMap.h"
-#include "Utils/ModQTableWidget.h"
+#include "FixedLabel.h"
+#include "ModQComboBox.h"
+#include "ModQMap.h"
+#include "ModQTableWidget.h"
 
 #include <QCheckBox>
 #include <QComboBox>

@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(PrintingRates VERSION 0.1.0)
 
-# file(GLOB_RECURSE HELPER_FILES "/src/HELPER/*.cpp")
-# file(GLOB_RECURSE INCLUDE_FILES "*.h")
-
 # Find includes in the build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -29,13 +26,7 @@ set(SOURCE_FILES
     ${UTILS}
     "main.cpp"
     "./Utils/ModOrderedMap.cpp"
-    "./Utils/ModOrderedMap.h"
-    # "./DashboardWidget.cpp"
-    # "./DashboardWidget.h"
-    # "./Utils/ModQMap.cpp"
-    # "./Utils/Settings.cpp"
-    # "./Utils/JsonSettings.cpp"
-    # "./Utils/errorhdlr.cpp"
+    "./Include/Utils/ModOrderedMap.h"
     ${InstallerConfigs}
     ${Packages}
     ${Scripts}
