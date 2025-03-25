@@ -8,7 +8,7 @@
         <License name="GNU Affero General Public License v3.0 (GNU AGPLv3)" file="license.txt" />
     </Licenses>
     <Default>script</Default>
-    <Script>AddMenuShortcut.qs</Script>
+    <Script>AddMenuShortcut.js</Script>
     <UserInterfaces>
         <UserInterface>page.ui</UserInterface>
     </UserInterfaces>

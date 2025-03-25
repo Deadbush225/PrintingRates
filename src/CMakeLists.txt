@@ -42,7 +42,6 @@ set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/icons/Printing Rates.
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${app_icon_resource_windows} icons/resource.qrc
     settings.ini)
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "Printing Rates")
-# include_directories("src/Utils" "Utils/")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     set_property(TARGET ${PROJECT_NAME} PROPERTY WIN32_EXECUTABLE true)
@@ -56,14 +55,6 @@ endif()
 #---
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
-# target_include_directories(PrintingRates PRIVATE "Utils")
-
-# target_link_libraries(Testsd PRIVATE Qt6::Widgets)
-# target_link_libraries(Testsd PRIVATE Qt6::Core)
-
-# set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-# set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-# include(CPack)
 
 ### --- DEFAULT
 # message(install_bindir="${CMAKE_INSTALL_BINDIR}")
