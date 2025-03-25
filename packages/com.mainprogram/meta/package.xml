@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Printing Rates</DisplayName>
+    <Description>Main program</Description>
+    <Version>0.0.4</Version>
+    <ReleaseDate>2025-03-24</ReleaseDate>
+    <Licenses>
+        <License name="GNU Affero General Public License v3.0 (GNU AGPLv3)" file="license.txt" />
+    </Licenses>
+    <Default>script</Default>
+    <Script>AddMenuShortcut.js</Script>
+    <UserInterfaces>
+        <UserInterface>page.ui</UserInterface>
+    </UserInterfaces>
+</Package>
