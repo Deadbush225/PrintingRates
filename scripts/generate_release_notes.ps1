@@ -35,5 +35,5 @@ $arguments = @(
     "--notes-file",
     $release_notes
 )
-Start-Process "gh" -ArgumentList ($arguments -join " ")
+Start-Process "gh" -ArgumentList ($arguments -join " ") -NoNewWindow -Wait
 Write-Host "Release created"
