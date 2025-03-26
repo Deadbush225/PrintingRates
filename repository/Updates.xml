@@ -2,22 +2,22 @@
  <ApplicationName>{AnyApplication}</ApplicationName>
  <ApplicationVersion>1.0.0</ApplicationVersion>
  <Checksum>true</Checksum>
+ <SHA1>d97991d163fd30a14233995cfe1b82a940cb7fb5</SHA1>
+ <MetadataName>2025-03-27-0039_meta.7z</MetadataName>
  <PackageUpdate>
   <Name>com.mainprogram</Name>
   <DisplayName>Printing Rates</DisplayName>
   <Description>Main program</Description>
-  <Version>0.0.4</Version>
+  <Version>v0.0.5</Version>
   <ReleaseDate>2025-03-24</ReleaseDate>
   <Default>script</Default>
   <Script>AddMenuShortcut.js</Script>
-  <UpdateFile CompressedSize="16738465" OS="Any" UncompressedSize="60161940"/>
+  <UpdateFile CompressedSize="16738288" OS="Any" UncompressedSize="60161940"/>
   <DownloadableArchives>bin.7z,translations.7z</DownloadableArchives>
   <UserInterfaces>page.ui</UserInterfaces>
   <Licenses>
    <License file="license.txt" name="GNU Affero General Public License v3.0 (GNU AGPLv3)"/>
   </Licenses>
-  <SHA1>3f2fb77517ab812a1d5c43d970936a5244658762</SHA1>
+  <SHA1>b3fbcfb0d5d54be80418416650af04668aa929d3</SHA1>
  </PackageUpdate>
- <SHA1>f3d359b2e78ae1c406fd1ae93021bf38c4836077</SHA1>
- <MetadataName>2025-03-25-2313_meta.7z</MetadataName>
 </Updates>

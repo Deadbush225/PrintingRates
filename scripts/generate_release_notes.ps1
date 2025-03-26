@@ -1,5 +1,5 @@
 # ━━━━━━━━━━━━━━━━━━━━ UPDATE repository FOLDER ━━━━━━━━━━━━━━━━━━━━ #
-Start-Process "./update_repository.ps1"
+Start-Process "./scripts/update_repository.ps1"
 
 # ━━━━━━━━━━━━━━━━━━━━━━━ BUILD RELEASE NOTES ━━━━━━━━━━━━━━━━━━━━━━ #
 
@@ -7,7 +7,7 @@ Start-Process "./update_repository.ps1"
 $installerPath = "./PrintingRatesSetup-x64.exe"
 $release_template = "./release_template.md"
 $release_notes = "./release_notes.md"
-$version = "v0.0.4"
+$version = (Get-Content -Path "./scripts/version.txt").Trim()
 
 # Calculate the SHA256 hash of the installer file
 $hash = Get-FileHash -Path $installerPath -Algorithm SHA256 | Select-Object -ExpandProperty Hash
@@ -22,7 +22,7 @@ $markdownContent = $markdownContent -replace "%TITLE%", $version
 # Write the updated content back to the markdown file
 Set-Content -Path $release_notes -Value $markdownContent
 
-Write-Host "Release notes built"
+Write-Host "Release notes for " $version "built"
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━ CREATE RELEASE ━━━━━━━━━━━━━━━━━━━━━━━━━ #
 # $version = "v0.0.4"

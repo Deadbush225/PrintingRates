@@ -2,9 +2,9 @@
 
 | Description                         | Filename                                                                                                                        | sha256 hash |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| Machine wide Online Installer - x64 | [PrintingRatesSetup-x64.exe](https://github.com/Deadbush225/PrintingRates/releases/download/v0.0.4/PrintingRatesSetup-x64.exe) | 7813F98B95C2FECF17A96B1727FDBC163EC6053F5E9890736654D2799A4C2A69      |
+| Machine wide Online Installer - x64 | [PrintingRatesSetup-x64.exe](https://github.com/Deadbush225/PrintingRates/releases/download/v0.0.5/PrintingRatesSetup-x64.exe) | 26C807DAC6C8223F750C21E84552C9EEA404173518DCCC055A633CD6AD390BFA      |
 
 ## Highlights
 
-- support online updates through GitHub repo
+- editable config file (but needs manual refresh, every changes)
 

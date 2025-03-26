@@ -6,4 +6,4 @@
 
 ## Highlights
 
-- support online updates through the GitHub repo
+- editable config file (but needs manual refresh, every changes)
