@@ -23,12 +23,10 @@ class JsonSettings {
     EVariantMap settingsVariant;
     std::string defaultContents = R"({
 	"Content Type": [
-		{ "Text3": "5, 5, 4, 4, 3, 3" },
-		{ "Text": "5, 5, 4, 4, 3, 3" },
-		{ "Text2": "5, 5, 4, 4, 3, 3" },
-		{ "TextwPhoto": "8, 7, 6, 5, 5, 4" },
-		{ "Photo": "1, 2, 3, 4, 5, 5" },
-		{ "Photo23": "1, 2, 3, 4, 5, 5" }
+		{ "Text3": "3, 3, 4, 4, 5, 5" },
+		{ "Text": "3, 3, 4, 4, 5, 5" },
+		{ "Text2": "3, 3, 4, 4, 5, 5" },
+		{ "TextwPhoto": "4, 5, 5, 6, 7, 8" }
 	],
 	"Page Coverage": ["1/6", "2/6", "Half", "4/6", "5/6", "Full"],
 	"Quality Type": [
@@ -56,7 +54,6 @@ class JsonSettings {
             QCoreApplication::applicationDirPath() + "/config.json";
         QFile file(relativeJsonFilePath);
 
-        qDebug() << "TEST";
         qDebug() << relativeJsonFilePath;
 
         if (!file.exists()) {

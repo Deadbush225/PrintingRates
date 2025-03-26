@@ -41,10 +41,10 @@
 // }
 
 ModOrderedMap<QVariant> JsonArray_to_Map(QJsonArray arr) {
-    qDebug() << "+++ JsonArray_to_Map +++" << "\n";
+    // qDebug() << "+++ JsonArray_to_Map +++" << "\n";
     ModOrderedMap<QVariant> e;
 
-    QString str = "1234";               // Example input
+    // QString str = "1234";               // Example input
     QRegularExpression re("^[0-9]+$");  // Regex for digits only
 
     for (auto a : arr) {
@@ -55,7 +55,7 @@ ModOrderedMap<QVariant> JsonArray_to_Map(QJsonArray arr) {
             QString value = oj[key].toString();
 
             if (value.contains(",")) {
-                qDebug() << "Converting to stringList: -------";
+                // qDebug() << "Converting to stringList: -------";
                 QList<QString> stringList = value.split(", ");
                 QList<int> intList;
                 for (QString s : stringList) {
@@ -85,12 +85,12 @@ ModOrderedMap<QVariant> JsonArray_to_Map(QJsonArray arr) {
             }
 
             e.insert(key, value);
-            qDebug() << key << ":" << value;
+            // qDebug() << key << ":" << value;
         }
     }
-    qDebug() << e.m_key;
-    qDebug() << e.list;
-    qDebug() << "--- JsonArray_to_Map ---" << "\n";
+    // qDebug() << e.m_key;
+    // qDebug() << e.list;
+    // qDebug() << "--- JsonArray_to_Map ---" << "\n";
     return e;
 }
 
@@ -101,7 +101,7 @@ if the content is a list:
 */
 
 EVariantMap serializeJSON(QJsonObject object) {
-    qDebug() << "+++ Serialize JSON +++";
+    // qDebug() << "+++ Serialize JSON +++";
     qDebug() << object.keys() << "\n";
 
     EVariantMap m_map;
@@ -113,24 +113,24 @@ EVariantMap serializeJSON(QJsonObject object) {
         key = e.key();
         value = e.value();
 
-        qDebug() << "Key: " << key << "\n";
-        qDebug() << "Value: " << value << "\n";
+        // qDebug() << "Key: " << key << "\n";
+        // qDebug() << "Value: " << value << "\n";
         if (value.isArray()) {
-            qDebug() << "Value is Array" << "\n";
+            // qDebug() << "Value is Array" << "\n";
             QJsonValue probe = value.toArray()[0];
 
             if (probe.isObject()) {
                 ModOrderedMap<QVariant> map = JsonArray_to_Map(value.toArray());
                 // qDebug() << map["Photo"];
                 // qDebug() << map["Text"];
-                qDebug() << "Element is MAP: \n";  // << map;
+                // qDebug() << "Element is MAP: \n";  // << map;
 
-                qDebug() << map.m_key << "\n";
-                qDebug() << map.list << "\n";
+                // qDebug() << map.m_key << "\n";
+                // qDebug() << map.list << "\n";
 
-                qDebug() << "To Array: " << value.toArray();
+                // qDebug() << "To Array: " << value.toArray();
                 // qDebug() << map;
-                qDebug() << "Variant: " << QVariant::fromValue(map);
+                // qDebug() << "Variant: " << QVariant::fromValue(map);
 
                 m_map.insert(key, QVariant::fromValue(map));
                 // m_map.insert(key, map.toVariant());
@@ -139,7 +139,7 @@ EVariantMap serializeJSON(QJsonObject object) {
                 // qDebug() << array;
                 // qDebug() << array[0];
 
-                qDebug() << "Element is ARRAY: \n" << array;
+                // qDebug() << "Element is ARRAY: \n" << array;
 
                 m_map.insert(key, array);
             }
@@ -151,7 +151,7 @@ EVariantMap serializeJSON(QJsonObject object) {
     // qDebug() << m_map["Content Type"].value<ModOrderedMap<QString>>().value(
     //     "Photo");
 
-    qDebug() << "--- Serialize JSON ---" << "\n";
+    // qDebug() << "--- Serialize JSON ---" << "\n";
 
     return m_map;
 }

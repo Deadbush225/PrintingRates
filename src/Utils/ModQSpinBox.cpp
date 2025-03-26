@@ -11,7 +11,7 @@ ModQSpinBox::ModQSpinBox(int row) {
 }
 
 void ModQSpinBox::updateProperty(int i) {
-    qDebug() << "Value changed: " << i << "\n";
+    // qDebug() << "Value changed: " << i << "\n";
 
     this->reference_property = i;
     emit rowChanged(this->row);

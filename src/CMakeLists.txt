@@ -1,11 +1,16 @@
 cmake_minimum_required(VERSION 3.16)
 project(PrintingRates VERSION 0.1.0)
 
+set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_C_COMPILER_LAUNCHER "ccache")
+set(CMAKE_CXX_COMPILER_LAUNCHER "ccache")
+
 # Find includes in the build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Turn on automatic invocation of the MOC, UIC & RCC
 set(CMAKE_AUTOMOC ON)
+
 # set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -30,14 +35,13 @@ set(SOURCE_FILES
     ${InstallerConfigs}
     ${Packages}
     ${Scripts}
-    )
+)
 
 # set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/resources/photosurface.rc")
 
 # qt_add_executable(photosurfaceexample main.cpp ${app_icon_resource_windows})
 # add_executable(PrintingRates main.cpp DashboardWidget.cpp)
-#---
-
+# ---
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/icons/Printing Rates.rc")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${app_icon_resource_windows} icons/resource.qrc
     settings.ini)
@@ -52,25 +56,24 @@ endif()
 # target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 # target_precompile_headers(${PROJECT_NAME} PRIVATE "./Utils/pch.h" "./Utils/FixedLabel.h" "./Utils/ModQComboBox.h" "./Utils/ModQMap.h" "./Utils/ModQSpinBox.h" "./Utils/ModQTableWidget.h")
 
-#---
+# ---
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
 
-### --- DEFAULT
+# ## --- DEFAULT
 # message(install_bindir="${CMAKE_INSTALL_BINDIR}")
 
 # install(TARGETS ${PROJECT_NAME} BUNDLE DESTINATION . RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # qt_generate_deploy_app_script(
-#     TARGET ${PROJECT_NAME} OUTPUT_SCRIPT deploy_script NO_TRANSLATIONS
+# TARGET ${PROJECT_NAME} OUTPUT_SCRIPT deploy_script NO_TRANSLATIONS
 # )
 
 # message(deploy_script="${deploy_script}")
 
 # install(SCRIPT ${deploy_script})
 
-### ----
-
+# ## ----
 if(APPLE)
     set(executable_path "$<TARGET_FILE_NAME:${PROJECT_NAME}>.app")
 elseif(WIN32)
