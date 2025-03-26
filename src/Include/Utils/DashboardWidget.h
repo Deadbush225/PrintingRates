@@ -47,6 +47,7 @@ class DashboardWidget : public QWidget {
    public slots:
     void calculate();
     void openChangeDialog();
+    void openConfig();
 
    private:
     ModQMap<QString, QList<int>> contentType_Map;

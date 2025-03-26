@@ -221,17 +221,7 @@ void ModQTableWidget::addRow(int row) {
         pageCount_spnbx->setValue(rowData.pageCount);
         copyCount_spnbx->setValue(rowData.copyCount);
         qDebug() << row;
-        auto it = tableData->begin();
-        while (it != tableData->end()) {
-            qDebug() << "Content Type:" << it->contentType
-                     << "Photo Coverage:" << it->photoCoverage
-                     << "Quality Type:" << it->qualityType
-                     << "Paper Size:" << it->paperSize
-                     << "Paper Type:" << it->paperType
-                     << "Page Count:" << it->pageCount
-                     << "Copy Count:" << it->copyCount;
-            ++it;
-        }
+        qDebug() << tableData;
     }
 
     // LAYOUT
