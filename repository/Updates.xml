@@ -10,14 +10,14 @@
   <ReleaseDate>2025-03-24</ReleaseDate>
   <Default>script</Default>
   <Script>AddMenuShortcut.js</Script>
-  <UpdateFile CompressedSize="16738454" OS="Any" UncompressedSize="60161940"/>
+  <UpdateFile CompressedSize="18088418" OS="Any" UncompressedSize="68305389"/>
   <DownloadableArchives>bin.7z,translations.7z</DownloadableArchives>
   <UserInterfaces>page.ui</UserInterfaces>
   <Licenses>
    <License file="license.txt" name="GNU Affero General Public License v3.0 (GNU AGPLv3)"/>
   </Licenses>
-  <SHA1>1a79d9f37d0e726c46085a8c3f0a0ea05a3d9730</SHA1>
+  <SHA1>8d629c84ad46e6fd83636bc26fabb1cb1960051c</SHA1>
  </PackageUpdate>
- <SHA1>d30e895b1f4a9df355a967e174419b4acc9b2c4d</SHA1>
- <MetadataName>2025-03-27-0046_meta.7z</MetadataName>
+ <SHA1>f59ceda0917c32a4101c77fc184dda419a4b8af4</SHA1>
+ <MetadataName>2025-03-27-0826_meta.7z</MetadataName>
 </Updates>
