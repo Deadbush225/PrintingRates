@@ -1,0 +1,23 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>true</Checksum>
+ <PackageUpdate>
+  <Name>com.mainprogram</Name>
+  <DisplayName>Printing Rates</DisplayName>
+  <Description>Main program</Description>
+  <Version>v0.0.6</Version>
+  <ReleaseDate>2025-03-24</ReleaseDate>
+  <Default>script</Default>
+  <Script>AddMenuShortcut.js</Script>
+  <UpdateFile CompressedSize="16732925" OS="Any" UncompressedSize="60140547"/>
+  <DownloadableArchives>bin.7z,translations.7z</DownloadableArchives>
+  <UserInterfaces>page.ui</UserInterfaces>
+  <Licenses>
+   <License file="license.txt" name="GNU Affero General Public License v3.0 (GNU AGPLv3)"/>
+  </Licenses>
+  <SHA1>bec81d293ced6d2531780864a498aebdc5a3aba7</SHA1>
+ </PackageUpdate>
+ <SHA1>b8bf4adce54db827c52f15b385bfe4ae03488b5f</SHA1>
+ <MetadataName>2025-03-27-2349_meta.7z</MetadataName>
+</Updates>

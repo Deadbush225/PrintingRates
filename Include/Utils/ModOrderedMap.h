@@ -9,7 +9,6 @@
 #include <QVariantMap>
 
 #include <stdexcept>
-// #include "../../Utils/errorhdlr.cpp"
 #include "Utils/errorhdlr.h"
 
 // QVariantMap serializeJSON(QJsonObject object);

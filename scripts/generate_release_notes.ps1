@@ -1,11 +1,11 @@
 # ━━━━━━━━━━━━━━━━━━━━ UPDATE repository FOLDER ━━━━━━━━━━━━━━━━━━━━ #
-Start-Process "./scripts/update_repository.ps1"
-
+# Run the update_repository.ps1 script
+& "./scripts/update_repository.ps1"
 # ━━━━━━━━━━━━━━━━━━━━━━━ BUILD RELEASE NOTES ━━━━━━━━━━━━━━━━━━━━━━ #
 
 # Define the paths to the installer file and the markdown file
 $installerPath = "./PrintingRatesSetup-x64.exe"
-$release_template = "./release_template.md"
+$release_template = "./scripts/release_template.md"
 $release_notes = "./release_notes.md"
 $version = (Get-Content -Path "./scripts/version.txt").Trim()
 
@@ -23,7 +23,7 @@ $markdownContent = $markdownContent -replace "%TITLE%", $version
 Set-Content -Path $release_notes -Value $markdownContent
 
 Write-Host "Release notes for " $version "built"
-
+exit
 # ━━━━━━━━━━━━━━━━━━━━━━━━━ CREATE RELEASE ━━━━━━━━━━━━━━━━━━━━━━━━━ #
 # $version = "v0.0.4"
 $arguments = @(

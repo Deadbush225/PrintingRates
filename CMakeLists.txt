@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(PrintingRates VERSION 0.1.0)
 
-set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_C_COMPILER_LAUNCHER "ccache")
 set(CMAKE_CXX_COMPILER_LAUNCHER "ccache")
 
