@@ -23,7 +23,7 @@ $markdownContent = $markdownContent -replace "%TITLE%", $version
 Set-Content -Path $release_notes -Value $markdownContent
 
 Write-Host "Release notes for " $version "built"
-exit
+
 # ━━━━━━━━━━━━━━━━━━━━━━━━━ CREATE RELEASE ━━━━━━━━━━━━━━━━━━━━━━━━━ #
 # $version = "v0.0.4"
 $arguments = @(
