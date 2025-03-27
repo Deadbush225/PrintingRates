@@ -83,6 +83,9 @@ else()
     set(STATUS "UNIX Based SYSTEM")
 endif()
 
+# ━━━━━━━━━━━━━━━━━━━━━ Installation Related ━━━━━━━━━━━━━━━━━━━━━
+set(CMAKE_INSTALL_PREFIX "./package/com.mainprogram/data")
+
 set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${PROJECT_NAME}.cmake")
 
 file(GENERATE OUTPUT ${deploy_script} CONTENT "
