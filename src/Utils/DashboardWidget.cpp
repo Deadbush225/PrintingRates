@@ -1,9 +1,9 @@
 
-#include "../Include/Utils/DashboardWidget.h"
+#include "Utils/DashboardWidget.h"
 
-#include "../Include/Utils/FixedLabel.h"
-#include "../Include/Utils/ModQComboBox.h"
 #include "ModQMap.cpp"
+#include "Utils/FixedLabel.h"
+#include "Utils/ModQComboBox.h"
 
 #include <cmath>
 

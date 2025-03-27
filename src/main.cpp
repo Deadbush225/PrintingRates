@@ -12,8 +12,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-#include "Include/Utils/DashboardWidget.h"
-#include "Include/Utils/ModOrderedMap.h"
+#include "Utils/DashboardWidget.h"
+#include "Utils/ModOrderedMap.h"
 
 Q_DECLARE_METATYPE(ModOrderedMap<QString>)
 

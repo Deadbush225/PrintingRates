@@ -1,4 +1,4 @@
-#include "../Include/Utils/FixedLabel.h"
+#include "Utils/FixedLabel.h"
 
 FixedLabel::FixedLabel(const QString& text) : QLabel(text) {
     this->setMinimumWidth(110);

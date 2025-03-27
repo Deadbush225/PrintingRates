@@ -1,4 +1,4 @@
-#include "../Include/Utils/ModQComboBox.h"
+#include "Utils/ModQComboBox.h"
 
 ModQComboBox::ModQComboBox() {
     // this->reference_property = QProperty<QString>{};

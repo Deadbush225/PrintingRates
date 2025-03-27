@@ -1,4 +1,3 @@
-#include "../Include/Utils/JsonSettings.h"
 
 #include <QDebug>
 #include <QVariantMap>
@@ -11,9 +10,10 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "../Include/Utils/EVariantMap.h"
-#include "../Include/Utils/ModOrderedMap.h"
-#include "errorhdlr.cpp"
+#include "Utils/EVariantMap.h"
+#include "Utils/JsonSettings.h"
+#include "Utils/ModOrderedMap.h"
+// #include "errorhdlr.cpp"
 
 // ModOrderedMap<QString> JsonArray_to_Map(QJsonArray arr) {
 //     qDebug() << "+++ JsonArray_to_Map +++" << "\n";
