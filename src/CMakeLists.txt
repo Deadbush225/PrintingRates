@@ -84,7 +84,7 @@ else()
 endif()
 
 # ━━━━━━━━━━━━━━━━━━━━━ Installation Related ━━━━━━━━━━━━━━━━━━━━━
-set(CMAKE_INSTALL_PREFIX "./package/com.mainprogram/data")
+set(CMAKE_INSTALL_PREFIX "./packages/com.mainprogram/data")
 
 set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${PROJECT_NAME}.cmake")
 
