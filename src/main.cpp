@@ -15,7 +15,38 @@
 #include "Utils/DashboardWidget.h"
 #include "Utils/ModOrderedMap.h"
 
+#include <boost/log/trivial.hpp>
+
+#include <boost/log/expressions.hpp>
+#include <boost/log/sinks/text_file_backend.hpp>
+#include <boost/log/support/date_time.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/utility/setup/file.hpp>
+
 Q_DECLARE_METATYPE(ModOrderedMap<QString>)
+
+void setupLogger() {
+    boost::log::add_common_attributes();
+    boost::log::formatter fmt =
+        boost::log::expressions::stream
+        << "[" << boost::log::expressions::attr<unsigned int>("LineID") << "]"
+        << "["
+        << boost::log::expressions::format_date_time<boost::posix_time::ptime>(
+               "TimeStamp", "%Y-%m-%d %H:%M:%S")
+        << "]"
+        << "[" << boost::log::trivial::severity << "] "
+        << boost::log::expressions::smessage;
+
+    auto sink = boost::log::add_file_log(
+        boost::log::keywords::file_name = "sample.log",
+        boost::log::keywords::rotation_size =
+            10 * 1024 * 1024,  // Rotate files after 10MB
+        boost::log::keywords::auto_flush = true);
+
+    sink->set_formatter(fmt);
+
+    boost::log::trivial::severity_level logLevel = boost::log::trivial::info;
+}
 
 void setupDarkTheme() {
     QApplication::setStyle("Fusion");
@@ -49,6 +80,12 @@ void setupDarkTheme() {
 }
 
 int main(int argc, char* arg[]) {
+    setupLogger();
+
+    BOOST_LOG_TRIVIAL(info) << "This is an info message.";
+    BOOST_LOG_TRIVIAL(debug) << "Debugging is fun!";
+    BOOST_LOG_TRIVIAL(error) << "Oops, an error!";
+
     qRegisterMetaType<ModOrderedMap<QString>>("ModOrderedMap<QString>");
 
     auto app = QApplication(argc, arg);
