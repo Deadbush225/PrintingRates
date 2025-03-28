@@ -37,8 +37,11 @@ void setupLogger() {
         << "[" << boost::log::trivial::severity << "] "
         << boost::log::expressions::smessage;
 
+    auto execPath = QApplication::applicationDirPath();
+    auto logFilePath = execPath + "/sample.log";
+
     auto sink = boost::log::add_file_log(
-        boost::log::keywords::file_name = "sample.log",
+        boost::log::keywords::file_name = logFilePath.toStdString(),
         boost::log::keywords::rotation_size =
             10 * 1024 * 1024,  // Rotate files after 10MB
         boost::log::keywords::auto_flush = true);
