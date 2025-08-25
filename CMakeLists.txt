@@ -48,7 +48,7 @@ set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/src/icons/Printing Ra
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${app_icon_resource_windows} src/icons/resource.qrc)
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "Printing Rates")
 
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+if(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
     set_property(TARGET ${PROJECT_NAME} PROPERTY WIN32_EXECUTABLE true)
 endif()
 
