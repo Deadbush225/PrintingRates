@@ -254,20 +254,47 @@ jobs:
         exit 1
       }
 
-   - name: Install Inno Setup
+   - name: Check/Install Inno Setup
      shell: pwsh
      run: |
-      Write-Host "Installing Inno Setup..."
-      $innoSetupUrl = "https://files.jrsoftware.org/is/6/innosetup-6.2.2.exe"
-      $innoSetupPath = "$env:TEMP\innosetup.exe"
+      # Check if ISCC.exe is already available
+      $isccPaths = @(
+        "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
+        "${env:ProgramFiles}\Inno Setup 6\ISCC.exe",
+        "${env:ProgramFiles(x86)}\Inno Setup 5\ISCC.exe",
+        "${env:ProgramFiles}\Inno Setup 5\ISCC.exe"
+      )
       
-      Write-Host "Downloading Inno Setup from: $innoSetupUrl"
-      Invoke-WebRequest -Uri $innoSetupUrl -OutFile $innoSetupPath
+      $isccFound = $false
+      foreach ($path in $isccPaths) {
+        if (Test-Path $path) {
+          Write-Host "Found existing Inno Setup at: $path"
+          $isccFound = $true
+          break
+        }
+      }
       
-      Write-Host "Installing Inno Setup silently..."
-      Start-Process -FilePath $innoSetupPath -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait
+      # Try to find ISCC in PATH
+      if (-not $isccFound) {
+        try {
+          $isccCmd = Get-Command "ISCC.exe" -ErrorAction SilentlyContinue
+          if ($isccCmd) {
+            Write-Host "Found ISCC.exe in PATH: $($isccCmd.Source)"
+            $isccFound = $true
+          }
+        } catch {}
+      }
       
-      Write-Host "Inno Setup installation completed"
+      if (-not $isccFound) {
+        Write-Host "Inno Setup not found, installing via chocolatey..."
+        
+        # Use chocolatey which is pre-installed on GitHub Actions
+        choco install innosetup --yes
+        
+        Write-Host "Inno Setup installation completed via chocolatey"
+      } else {
+        Write-Host "Inno Setup already available, skipping installation"
+      }
 
    - name: Create Windows installer
      shell: pwsh
