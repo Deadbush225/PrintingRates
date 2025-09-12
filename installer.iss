@@ -30,30 +30,24 @@
 AppId={{B8F2B8F2-1234-5678-9ABC-DEF0123456789}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
-AllowNoIcons=yes
-LicenseFile=LICENSE.txt
-OutputDir=windows-installer
-OutputBaseFilename={#MyPackageId}Setup-{#MyAppVersion}-x64
-SetupIconFile=src\icons\Printing Rates.ico
-Compression=lzma
-SolidCompression=yes
-WizardStyle=modern
+DisableDirPage=no
+UninstallDisplayIcon={app}\{#MyAppExeName}
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-MinVersion=0,6.0
+DisableProgramGroupPage=yes
 PrivilegesRequired=admin
-DisableWelcomePage=no
-DisableDirPage=no
-DisableProgramGroupPage=no
-DisableReadyPage=no
-DisableFinishedPage=no
+OutputDir=windows-installer
+OutputBaseFilename={#MyPackageId}Setup-{#MyAppVersion}-x64
+SolidCompression=yes
+Compression=lzma
+WizardStyle=modern
+SetupIconFile=src\icons\Printing Rates.ico
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
