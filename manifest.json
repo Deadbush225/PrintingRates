@@ -1,0 +1,28 @@
+{
+	"name": "Printing Rates",
+	"version": "0.1.0",
+	"description": "Professional printing rate calculator and quotation tool",
+	"homepage": "https://github.com/Deadbush225/printing-rates",
+	"license": "MIT",
+	"maintainer": "Deadbush225 <your-email@example.com>",
+	"desktop": {
+		"desktop_name": "Printing Rates",
+		"generic_name": "Printing Calculator",
+		"comment": "Professional printing rate calculator and quotation tool",
+		"categories": "Office;Finance;Calculator;",
+		"keywords": "printing;rates;calculator;quotation;business;office;",
+		"mime_types": "",
+		"executable": "Printing Rates",
+		"icon_path": "icons/Printing Rates.png",
+		"package_id": "printing-rates",
+		"supports_files": false,
+		"cli_helper": false
+	},
+	"deployment": {
+		"dependencies": {
+			"deb": "libc6, libqt6core6, libqt6gui6, libqt6widgets6, libboost-log1.83.0 | libboost-log1.82.0 | libboost-log1.81.0 | libboost-log1.74.0 | libboost-log-dev",
+			"rpm": "qt6-qtbase qt6-qtbase-gui boost-log"
+		},
+		"extra_files": {}
+	}
+}

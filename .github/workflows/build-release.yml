@@ -1,0 +1,303 @@
+name: Build and Release
+
+on:
+ push:
+  tags:
+   - "v*"
+ workflow_dispatch:
+
+permissions:
+ contents: write
+
+jobs:
+ build-linux:
+  runs-on: ubuntu-latest
+
+  steps:
+   - uses: actions/checkout@v4
+
+   - name: Read version
+     id: ver
+     run: echo "version=$(jq -r .version manifest.json)" >> $GITHUB_OUTPUT
+
+   - name: Verify tag matches manifest.json version
+     if: startsWith(github.ref, 'refs/tags/')
+     run: |
+      tag="${GITHUB_REF_NAME#v}"
+      echo "Tag: $tag"
+      echo "Manifest: ${{ steps.ver.outputs.version }}"
+      if [ "$tag" != "${{ steps.ver.outputs.version }}" ]; then
+        echo "Tag ($tag) does not match manifest.json version (${{ steps.ver.outputs.version }})" >&2
+        exit 1
+      fi
+
+   - name: Install Qt6 & deps
+     run: |
+      sudo apt update
+      sudo apt install -y qt6-base-dev qt6-tools-dev cmake build-essential
+      sudo apt install -y libgl1-mesa-dev libxkbcommon-dev libxkbcommon-x11-dev libx11-xcb-dev libxcb1-dev libxcb-util-dev libxcb-xkb-dev
+      # Boost for logging (include both static and dynamic libraries)
+      sudo apt install -y libboost-log-dev libboost-dev libboost-all-dev
+      # Additional packaging tools
+      sudo apt install -y dpkg-dev rpm
+
+   - name: Install eUpdater
+     run: |
+      # Install eUpdater from source (GitHub)
+      if ! command -v eUpdater &> /dev/null; then
+        echo "Installing eUpdater from source..."
+        git clone https://github.com/Deadbush225/eUpdater.git /tmp/eUpdater
+        cd /tmp/eUpdater
+        rm -rf build
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+        make -j$(nproc)
+        sudo cmake --install .
+      fi
+
+   - name: Build application
+     run: |
+      cmake -B build -DCMAKE_BUILD_TYPE=Release
+      cmake --build build -- -j 2
+      cmake --build build --target install_local --config Release -j 2
+
+   - name: Verify install output
+     run: |
+      echo "Listing installed files under ./install"
+      ls -la ./install || true
+      echo "Tree (maxdepth 3)"
+      find ./install -maxdepth 3 -printf '%y %p\n' || true
+
+   - name: Debug install tree (detailed)
+     run: |
+      echo "PWD: $(pwd)"
+      echo "USER: $(whoami)"
+      echo "Stat ./install:" || true
+      stat ./install || true
+      echo "Detailed find:" 
+      find ./install -maxdepth 4 -ls || true
+      echo "File types:" 
+      file ./install/* || true
+
+   - name: Create packages
+     run: |
+      set -x
+      echo "--- Environment ---"
+      env
+      echo "--- install directory listing (before deploy) ---"
+      ls -la ./install || true
+      echo "--- invoking deploy.sh with tracing ---"
+      FORCE_RPM_TARBALL=1 KEEP_OLD_DIST=0 bash -x ./scripts/deploy.sh linux
+
+   - name: Upload Linux artifacts
+     uses: actions/upload-artifact@v4
+     with:
+      name: linux-packages
+      path: |
+       dist/*.AppImage
+       dist/*.deb
+       dist/*.rpm
+       dist/*.tar.gz
+
+ build-windows:
+  runs-on: windows-latest
+
+  steps:
+   - uses: actions/checkout@v4
+
+   - name: Install Qt6 (MSVC)
+     uses: jurplel/install-qt-action@v3
+     with:
+      version: "6.7.3"
+      host: "windows"
+      target: "desktop"
+      arch: "win64_msvc2019_64"
+
+   - name: Install eUpdater (Windows)
+     shell: pwsh
+     run: |
+      # Create dummy eUpdater for Windows build
+      if (-not (Test-Path "C:\Windows\System32\eUpdater.exe")) {
+        Write-Host "Creating eUpdater stub for Windows..."
+        '@echo off' | Out-File -FilePath "eUpdater.exe" -Encoding ASCII
+        'echo eUpdater stub - update functionality not available' | Out-File -FilePath "eUpdater.exe" -Append -Encoding ASCII
+        # Copy to a location that will be found by CMake
+        Copy-Item "eUpdater.exe" -Destination "C:\Windows\System32\eUpdater.exe" -Force
+      }
+
+   - name: Build application (MSVC)
+     run: |
+      cmake -B build -G "Visual Studio 17 2022" -A x64
+      cmake --build build --config Release -j 4
+
+   - name: Install and deploy Qt dependencies
+     shell: pwsh
+     run: |
+      Write-Host "=== Building and installing to ./install ==="
+      cmake --build build --target install_local --config Release -j 2
+
+      Write-Host "=== Locating windeployqt ==="
+      $windeploy = Get-Command windeployqt.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -ErrorAction SilentlyContinue
+      if (-not $windeploy) {
+        if ($env:Qt6_DIR) {
+          $candidate = Join-Path $env:Qt6_DIR "bin\windeployqt.exe"
+          if (Test-Path $candidate) { $windeploy = $candidate }
+        }
+      }
+
+      if (-not $windeploy) {
+        Write-Host "windeployqt not found on PATH nor under Qt6_DIR ($env:Qt6_DIR)"
+        exit 1
+      }
+
+      Write-Host "Using windeployqt: $windeploy"
+      $installRoot = Join-Path (Get-Location) "install"
+      $mainExe = Join-Path $installRoot "bin\Printing Rates.exe"
+      $updaterExe = Join-Path $installRoot "bin\eUpdater.exe"
+
+      if (-not (Test-Path $mainExe)) {
+        Write-Host "Main executable not found at $mainExe"; exit 1
+      }
+
+      Write-Host "Running windeployqt for main application..."
+      & $windeploy --release --dir $installRoot $mainExe
+
+      Write-Host "=== Stripping debug/optional DLLs ==="
+      # Remove known Qt debug DLLs specifically - avoid removing plugins that contain 'd' in their names
+      $debugPatterns = @('Qt6*d.dll', 'api-ms-*', 'vcruntime*d.dll', 'msvcp*d.dll')
+      foreach ($pattern in $debugPatterns) {
+        Get-ChildItem -Path $installRoot -Filter $pattern -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
+          Write-Host "Removing debug DLL: $($_.FullName)"; Remove-Item -Force $_.FullName -ErrorAction SilentlyContinue
+        }
+      }
+      Write-Host "===    Removing PDB /Debug   ==="
+      # Optionally remove PDB and other debug artifacts
+      Get-ChildItem -Path $installRoot -Include '*.pdb' -Recurse -ErrorAction SilentlyContinue | ForEach-Object { Remove-Item -Force $_.FullName -ErrorAction SilentlyContinue }
+
+   - name: Verify Qt deployment
+     if: success()
+     shell: pwsh
+     run: |
+      Write-Host "=== Checking Qt deployment success ==="
+      $qtDlls = @("Qt6Core.dll", "Qt6Gui.dll", "Qt6Widgets.dll")
+      $deploymentSuccess = $true
+
+      foreach ($dll in $qtDlls) {
+        $matches = Get-ChildItem -Path "./install" -Filter $dll -Recurse -ErrorAction SilentlyContinue
+        if ($matches) {
+          foreach ($match in $matches) {
+            $size = [math]::Round($match.Length / 1MB, 2)
+            $relativePath = $match.FullName.Replace((Resolve-Path "./install").Path, "").TrimStart('\')
+            Write-Host "✓ Found: $relativePath (${size}MB)"
+          }
+        } else {
+          Write-Host "✗ Missing: $dll"
+          $deploymentSuccess = $false
+        }
+      }
+
+      Write-Host "`n=== Install directory contents ==="
+      Get-ChildItem -Recurse "./install" | ForEach-Object {
+        if (-not $_.PSIsContainer) {
+          $size = [math]::Round($_.Length / 1MB, 2)
+          $relativePath = $_.FullName.Replace((Resolve-Path "./install").Path, "").TrimStart('\')
+          Write-Host "$relativePath : ${size}MB"
+        }
+      }
+
+      if (-not $deploymentSuccess) {
+        Write-Host "`nQt deployment failed - failing this job so fallback can run if configured"
+        exit 1
+      } else {
+        Write-Host "`nQt deployment successful!"
+      }
+
+   - name: Fallback Qt deployment (if previous step failed)
+     if: failure()
+     shell: pwsh
+     run: |
+      Write-Host "=== Running windeployqt fallback ==="
+      $qtDir = $env:Qt6_DIR
+      $windeploy = Join-Path $qtDir "bin\windeployqt.exe"
+      $installRoot = Join-Path (Get-Location) "install"
+      $mainExe = Join-Path $installRoot "bin\Printing Rates.exe"
+      $updaterExe = Join-Path $installRoot "bin\eUpdater.exe"
+
+      if (Test-Path $windeploy) {
+        Write-Host "Running windeployqt for main application..."
+        & $windeploy --release --dir $installRoot $mainExe
+        if (Test-Path $updaterExe) {
+          Write-Host "Running windeployqt for eUpdater..."
+          & $windeploy --release --dir $installRoot $updaterExe
+        }
+      } else {
+        Write-Host "windeployqt not found at $windeploy"
+        exit 1
+      }
+
+   - name: Create Windows installer
+     run: |
+      pwsh -ExecutionPolicy Bypass -File "./scripts/update_installer.ps1"
+
+   - name: Upload Windows artifacts
+     uses: actions/upload-artifact@v4
+     with:
+      name: windows-installer
+      path: windows-installer/*.exe
+      if-no-files-found: error
+
+ release:
+  needs: [build-linux, build-windows]
+  runs-on: ubuntu-latest
+  if: startsWith(github.ref, 'refs/tags/')
+
+  steps:
+   - uses: actions/checkout@v4
+     with:
+      fetch-depth: 0
+      fetch-tags: true
+
+   - name: Read version
+     id: ver
+     run: echo "version=$(jq -r .version manifest.json)" >> $GITHUB_OUTPUT
+
+   - name: Download all artifacts
+     uses: actions/download-artifact@v4
+
+   - name: Compute previous tag
+     id: prev
+     shell: bash
+     run: |
+      git fetch --tags --force
+      current="${GITHUB_REF_NAME}"
+      prev=$(git tag --sort=-v:refname | grep -E '^v[0-9]+' | grep -v "^${current}$" | head -n1)
+      echo "prev_tag=${prev}" >> $GITHUB_OUTPUT
+
+   - name: Render release body
+     id: body
+     shell: bash
+     run: |
+      BODY_TEMPLATE="scripts/release_template.md"
+      BODY_OUT="scripts/release_body.md"
+      cp "$BODY_TEMPLATE" "$BODY_OUT"
+      echo "" >> "$BODY_OUT"
+      if [ -n "${{ steps.prev.outputs.prev_tag }}" ]; then
+        echo "Full Changelog: https://github.com/${{ github.repository }}/compare/${{ steps.prev.outputs.prev_tag }}...${{ github.ref_name }}" >> "$BODY_OUT"
+      else
+        echo "Full Changelog: https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}" >> "$BODY_OUT"
+      fi
+
+   - name: Create Release
+     uses: softprops/action-gh-release@v1
+     with:
+      name: Printing Rates v${{ steps.ver.outputs.version }}
+      tag_name: ${{ github.ref_name }}
+      body_path: scripts/release_body.md
+      files: |
+       linux-packages/*
+       windows-installer/*
+      draft: false
+      prerelease: false
+      generate_release_notes: false
+      token: ${{ secrets.GITHUB_TOKEN }}
