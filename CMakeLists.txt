@@ -67,7 +67,13 @@ set(CMAKE_INSTALL_ICONDIR "icons")
 message(STATUS "Using toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
 
 # Simple Boost setup - only need log libraries
-if(WIN32 AND DEFINED BOOST_ROOT)
+# Try vcpkg/modern CMake first, then fall back to BOOST_ROOT approach
+find_package(Boost QUIET COMPONENTS log log_setup)
+
+if(Boost_FOUND)
+    message(STATUS "Found Boost via find_package: ${Boost_VERSION}")
+    set(BOOST_AVAILABLE TRUE)
+elseif(WIN32 AND DEFINED BOOST_ROOT)
     message(STATUS "Using BOOST_ROOT: ${BOOST_ROOT}")
 
     # Candidate include directories
@@ -199,10 +205,16 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets Qt6::Core)
 if(BOOST_AVAILABLE)
     target_compile_definitions(${PROJECT_NAME} PRIVATE HAVE_BOOST_LOG=1)
 
-    if(WIN32 AND DEFINED BOOST_ROOT)
+    # Prefer modern CMake targets if available (vcpkg/modern find_package)
+    if(TARGET Boost::log AND TARGET Boost::log_setup)
+        target_link_libraries(${PROJECT_NAME} PUBLIC Boost::log Boost::log_setup)
+        message(STATUS "Using modern Boost CMake targets")
+    elseif(WIN32 AND DEFINED BOOST_ROOT)
         target_link_libraries(${PROJECT_NAME} PUBLIC "boost_log" "boost_log_setup")
+        message(STATUS "Using BOOST_ROOT library names")
     else()
         target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
+        message(STATUS "Using Boost_LIBRARIES: ${Boost_LIBRARIES}")
     endif()
 else()
     target_compile_definitions(${PROJECT_NAME} PRIVATE HAVE_BOOST_LOG=0)
