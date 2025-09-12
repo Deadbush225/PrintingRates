@@ -153,7 +153,7 @@ jobs:
 
       Write-Host "Using windeployqt: $windeploy"
       $installRoot = Join-Path (Get-Location) "install"
-      $mainExe = Join-Path $installRoot "bin\Printing Rates.exe"
+      $mainExe = Join-Path $installRoot "bin\PrintingRates.exe"
       $updaterExe = Join-Path $installRoot "bin\eUpdater.exe"
 
       if (-not (Test-Path $mainExe)) {
@@ -236,7 +236,23 @@ jobs:
         exit 1
       }
 
+   - name: Install Inno Setup
+     shell: pwsh
+     run: |
+      Write-Host "Installing Inno Setup..."
+      $innoSetupUrl = "https://files.jrsoftware.org/is/6/innosetup-6.2.2.exe"
+      $innoSetupPath = "$env:TEMP\innosetup.exe"
+      
+      Write-Host "Downloading Inno Setup from: $innoSetupUrl"
+      Invoke-WebRequest -Uri $innoSetupUrl -OutFile $innoSetupPath
+      
+      Write-Host "Installing Inno Setup silently..."
+      Start-Process -FilePath $innoSetupPath -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait
+      
+      Write-Host "Inno Setup installation completed"
+
    - name: Create Windows installer
+     shell: pwsh
      run: |
       pwsh -ExecutionPolicy Bypass -File "./scripts/update_installer.ps1"
 
@@ -278,7 +294,7 @@ jobs:
      id: body
      shell: bash
      run: |
-      BODY_TEMPLATE="scripts/release_template.md"
+      BODY_TEMPLATE="scripts/release_notes.md"
       BODY_OUT="scripts/release_body.md"
       cp "$BODY_TEMPLATE" "$BODY_OUT"
       echo "" >> "$BODY_OUT"

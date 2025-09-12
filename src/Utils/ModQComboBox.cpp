@@ -10,7 +10,8 @@ ModQComboBox::ModQComboBox() {
     // this->reference_property_Notifier =
     //     this->reference_property->addNotifier(std::function);
 
-    QObject::connect(this, &currentTextChanged, this, &updateProperty);
+    QObject::connect(this, &ModQComboBox::currentTextChanged, this,
+                     &ModQComboBox::updateProperty);
 }
 
 void ModQComboBox::populate(const QStringList& items,

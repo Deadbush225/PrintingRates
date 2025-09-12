@@ -24,17 +24,20 @@ log_error() {
 }
 
 # Get script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Parse arguments
 BUILD_TYPE="Release"
 CLEAN=0
+CONFIGURE=0
+INSTALL=0
 
 for arg in "$@"; do
     case "$arg" in
         --debug|-d) BUILD_TYPE="Debug" ;;
-        --clean|-c) CLEAN=1 ;;
+        --config|-c) CONFIGURE=1 ;;
+        --install|-i) INSTALL=1 ;;
+        --clean) CLEAN=1 ;;
         --help|-h)
             echo "Usage: $0 [OPTIONS]"
             echo "Options:"
@@ -59,17 +62,20 @@ if [ "$CLEAN" -eq 1 ]; then
 fi
 
 # Create and configure build
-log_info "Configuring CMake..."
-cmake -B build -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
+if [ "$CONFIGURE" -eq 1 ]; then
+    log_info "Configuring CMake..."
+    cmake -S . -B ./build/ -DCMAKE_BUILD_TYPE="$BUILD_TYPE" --fresh
+fi
 
 # Build the project
 log_info "Building project..."
-cmake --build build --config "$BUILD_TYPE" -j "$(nproc 2>/dev/null || echo 4)"
+cmake --build ./build/ -j "$(nproc 2>/dev/null || echo 4)"
+log_success "Build completed successfully!"
 
 # Install to local directory
-log_info "Installing to ./install..."
-cmake --build build --target install_local --config "$BUILD_TYPE"
-
-log_success "Build completed successfully!"
-log_info "Executable installed to: ./install/bin/"
-log_info "Run './install/bin/Printing Rates' to test the application"
+if [ "$INSTALL" -eq 1 ]; then
+    log_info "Installing to ./install..."
+    cmake --build build --target install_local --config "$BUILD_TYPE"
+    log_info "Executable installed to: ./install/bin/"
+    log_info "Run './install/bin/Printing Rates' to test the    application"
+fi

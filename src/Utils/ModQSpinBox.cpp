@@ -7,7 +7,8 @@ ModQSpinBox::ModQSpinBox(int row) {
 
     // properties
     this->row = row;
-    QObject::connect(this, &valueChanged, this, &updateProperty);
+    QObject::connect(this, &ModQSpinBox::valueChanged, this,
+                     &ModQSpinBox::updateProperty);
 }
 
 void ModQSpinBox::updateProperty(int i) {

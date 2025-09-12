@@ -5,7 +5,7 @@
 
 # Define the paths to the installer file and the markdown file
 $installerPath = "./PrintingRatesSetup-x64.exe"
-$release_template = "./scripts/release_template.md"
+$release_template = "./scripts/release_notes.md"
 $release_notes = "./release_notes.md"
 $version = (Get-Content -Path "./scripts/version.txt").Trim()
 

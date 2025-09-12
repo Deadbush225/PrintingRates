@@ -189,7 +189,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
     set_property(TARGET ${PROJECT_NAME} PROPERTY WIN32_EXECUTABLE true)
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "Printing Rates")
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
@@ -305,6 +305,7 @@ add_custom_target(install_local
     COMMAND ${CMAKE_COMMAND} -E make_directory "${INSTALL_LOCAL_DIR}"
     COMMAND ${CMAKE_COMMAND} -E echo "Installing to ${INSTALL_LOCAL_DIR}"
     COMMAND ${CMAKE_COMMAND} --install "${CMAKE_BINARY_DIR}" --config $<IF:$<BOOL:$<CONFIG>>,$<CONFIG>,Release> --prefix "${INSTALL_LOCAL_DIR}"
+    DEPENDS ${PROJECT_NAME}
     USES_TERMINAL
     COMMENT "Build + local install to ${INSTALL_LOCAL_DIR}"
 )

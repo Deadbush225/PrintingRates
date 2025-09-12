@@ -1,146 +1,120 @@
-# PowerShell script to create/update Windows installer
-param(
-    [switch]$Help
-)
+# PowerShell script to build Inno Setup installer for Printing Rates
+# Based on the folder-customizer pattern - reads values from manifest.json
 
-if ($Help) {
-    Write-Host "Usage: .\update_installer.ps1"
-    Write-Host ""
-    Write-Host "This script creates a Windows installer for Printing Rates"
-    Write-Host "Requires: Qt Installer Framework (qtifw)"
-    exit 0
+# Ensure ./install exists by invoking the CMake convenience target
+if (Test-Path ./build) {
+	try {
+		Write-Host "Building install directory..." -ForegroundColor Yellow
+		cmake --build ./build --target install_local --config Release | Out-Null
+	} catch {
+		Write-Warning "Failed to build install_local target, continuing with existing install directory..."
+	}
 }
 
-$ProjectRoot = Split-Path -Parent $PSScriptRoot
-$InstallDir = Join-Path $ProjectRoot "install"
-$PackagesDir = Join-Path $ProjectRoot "packages"
-$WindowsInstallerDir = Join-Path $ProjectRoot "windows-installer"
+# Read values from manifest.json
+$manifest = Get-Content -Raw -Path "./manifest.json" | ConvertFrom-Json
+$version = "$($manifest.version)".Trim()
+$desktopName = "$($manifest.desktop.desktop_name)".Trim()
+$packageId = "$($manifest.desktop.package_id)".Trim()
+$description = "$($manifest.description)".Trim()
+$executable = "$($manifest.desktop.executable)".Trim()
 
-Write-Host "Creating Windows installer..." -ForegroundColor Blue
+Write-Host "Building installer version $version for $desktopName (package: $packageId, executable: $executable)" -ForegroundColor Green
 
-# Check if install directory exists
-if (-not (Test-Path $InstallDir)) {
-    Write-Error "Install directory not found: $InstallDir"
-    Write-Host "Please run 'cmake --build build --target install_local' first"
+# Check if installer script exists
+if (-not (Test-Path "./installer.iss")) {
+    Write-Error "Installer script not found: ./installer.iss"
     exit 1
 }
 
-# Create output directory
-if (-not (Test-Path $WindowsInstallerDir)) {
-    New-Item -ItemType Directory -Path $WindowsInstallerDir | Out-Null
-}
+# Find Inno Setup compiler
+$innoSetupPaths = @(
+    "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
+    "${env:ProgramFiles}\Inno Setup 6\ISCC.exe",
+    "${env:ProgramFiles(x86)}\Inno Setup 5\ISCC.exe",
+    "${env:ProgramFiles}\Inno Setup 5\ISCC.exe"
+)
 
-# Check for Qt Installer Framework
-$binaryCreator = Get-Command "binarycreator.exe" -ErrorAction SilentlyContinue
-if (-not $binaryCreator) {
-    $qtIfwPath = "${env:ProgramFiles}\Qt\Tools\QtInstallerFramework\*\bin\binarycreator.exe"
-    $binaryCreatorCandidates = Get-ChildItem $qtIfwPath -ErrorAction SilentlyContinue | Sort-Object Name -Descending
-    if ($binaryCreatorCandidates) {
-        $binaryCreator = $binaryCreatorCandidates[0]
-        Write-Host "Found Qt IFW: $($binaryCreator.FullName)"
-    } else {
-        Write-Warning "Qt Installer Framework not found. Trying direct command..."
-        # Fall back to trying the command directly
-        $binaryCreator = "binarycreator.exe"
+$isccPath = "ISCC.exe"  # Default to PATH
+foreach ($path in $innoSetupPaths) {
+    if (Test-Path $path) {
+        $isccPath = $path
+        break
     }
-} else {
-    Write-Host "Using binarycreator: $($binaryCreator.Source)"
 }
 
-# Copy install files to package data directory
-$packageDataDir = Join-Path $PackagesDir "com.mainprogram" "data"
-if (Test-Path $packageDataDir) {
-    Remove-Item -Recurse -Force $packageDataDir
-}
-New-Item -ItemType Directory -Path $packageDataDir -Force | Out-Null
-
-# Copy installation files
-Write-Host "Copying application files..."
-Copy-Item -Recurse -Path "$InstallDir\*" -Destination $packageDataDir
-
-# Read version for installer filename
-$manifestPath = Join-Path $ProjectRoot "manifest.json"
-if (Test-Path $manifestPath) {
-    $manifest = Get-Content $manifestPath | ConvertFrom-Json
-    $version = $manifest.version
-} else {
-    $version = "unknown"
-}
-
-# Create installer
-$installerName = "PrintingRatesSetup-x64.exe"
-$installerPath = Join-Path $WindowsInstallerDir $installerName
-
-Write-Host "Building installer: $installerName"
-
-$configPath = Join-Path $ProjectRoot "config" "config.xml"
-$packagesPath = $PackagesDir
+# Build the Windows installer with Inno Setup, passing values as defines
+Write-Host "Compiling installer with Inno Setup..." -ForegroundColor Yellow
+$arguments = @(
+    "/DMyAppVersion=$version",
+    "/DMyAppName=`"$desktopName`"",
+    "/DMyPackageId=$packageId",
+    "/DMyAppDescription=`"$description`"",
+    "/DMyAppExecutable=$executable",
+    "./installer.iss"
+)
 
 try {
-    # Try to run binarycreator
-    if ($binaryCreator.GetType().Name -eq "ApplicationInfo") {
-        $binaryCreatorExe = $binaryCreator.Source
-    } elseif ($binaryCreator.GetType().Name -eq "FileInfo") {
-        $binaryCreatorExe = $binaryCreator.FullName
-    } else {
-        $binaryCreatorExe = $binaryCreator
-    }
-
-    # Use the original command structure but with better error handling
-    Start-Process -FilePath $binaryCreatorExe -ArgumentList @(
-        "--offline-only",
-        "-c", $configPath,
-        "-p", $packagesPath,
-        $installerPath
-    ) -NoNewWindow -Wait -PassThru | ForEach-Object {
-        if ($_.ExitCode -ne 0) {
-            throw "binarycreator failed with exit code: $($_.ExitCode)"
-        }
-    }
+    $process = Start-Process $isccPath -ArgumentList $arguments -NoNewWindow -Wait -PassThru
     
-    if (Test-Path $installerPath) {
-        Write-Host "Installer created successfully: $installerPath" -ForegroundColor Green
-        
-        # Show file size
-        $fileInfo = Get-Item $installerPath
-        $sizeInMB = [math]::Round($fileInfo.Length / 1MB, 2)
-        Write-Host "Installer size: ${sizeInMB} MB"
-        
-        # Calculate and display hash
-        $hash = Get-FileHash $installerPath -Algorithm SHA256
-        Write-Host "SHA256: $($hash.Hash)"
-        
-        # Save hash to file for release notes
-        $hashFile = Join-Path $WindowsInstallerDir "installer-hash.txt"
-        "$installerName`: $($hash.Hash)" | Set-Content $hashFile
-        Write-Host "Hash saved to: $hashFile"
-        
-        # Also display in the original format for backward compatibility
-        Write-Host "`nHash details:"
-        Get-FileHash $installerPath | Format-List
-        
-    } else {
-        Write-Error "Installer file was not created: $installerPath"
+    if ($process.ExitCode -ne 0) {
+        Write-Error "Installer compilation failed with exit code: $($process.ExitCode)"
         exit 1
     }
+    
+    Write-Host "Installer compiled successfully!" -ForegroundColor Green
 } catch {
-    Write-Error "Error creating installer: $_"
-    Write-Host "Falling back to original command structure..."
-    
-    # Fallback to original command
-    try {
-        Start-Process -FilePath "binarycreator.exe" -ArgumentList @(
-            "-n", "-c", "config/config.xml", "-p", "packages", ".\PrintingRatesSetup-x64.exe"
-        ) -NoNewWindow -Wait
-        
-        if (Test-Path ".\PrintingRatesSetup-x64.exe") {
-            Get-FileHash ".\PrintingRatesSetup-x64.exe" | Format-List
-            Write-Host "Installer created successfully (fallback method)" -ForegroundColor Green
-        }
-    } catch {
-        Write-Error "Fallback method also failed: $_"
-        exit 1
-    }
+    Write-Error "Error running Inno Setup compiler: $_"
+    Write-Host "Make sure Inno Setup is installed and ISCC.exe is in your PATH"
+    exit 1
 }
 
-Write-Host "Windows installer creation completed!" -ForegroundColor Green
+# Create windows-installer directory and move the installer there
+if (!(Test-Path ./windows-installer)) { 
+    New-Item -ItemType Directory -Path ./windows-installer | Out-Null 
+    Write-Host "Created windows-installer directory" -ForegroundColor Blue
+}
+
+# Move the generated installer to windows-installer directory
+$installerPattern = "${packageId}Setup-${version}-x64.exe"
+$generatedInstallers = Get-ChildItem -Path . -Filter $installerPattern
+
+if ($generatedInstallers.Count -eq 0) {
+    # Fallback to any installer files in root
+    $generatedInstallers = Get-ChildItem -Path . -Filter "*Setup-*.exe"
+}
+
+if ($generatedInstallers.Count -gt 0) {
+    $generatedInstallers | ForEach-Object { 
+        Write-Host "Moving installer: $($_.Name) -> windows-installer/" -ForegroundColor Blue
+        Move-Item $_.FullName ./windows-installer/ -Force 
+    }
+} else {
+    Write-Warning "No installer files found matching pattern: $installerPattern"
+}
+
+# Display hash information for the installer (but don't save to separate file)
+$installerFiles = Get-ChildItem ./windows-installer -Filter "*Setup-*.exe" | Sort-Object LastWriteTime -Descending
+
+if ($installerFiles.Count -gt 0) {
+    Write-Host "`nInstaller Information:" -ForegroundColor Green
+    
+    $installerFiles | ForEach-Object {
+        $sizeInMB = [math]::Round($_.Length / 1MB, 2)
+        $hash = Get-FileHash $_.FullName -Algorithm SHA256
+        
+        Write-Host "  File: $($_.Name)"
+        Write-Host "  Size: ${sizeInMB} MB"
+        Write-Host "  SHA256: $($hash.Hash)" -ForegroundColor Cyan
+        Write-Host ""
+        
+        # Display in format ready for release notes
+        Write-Host "Ready for release_notes.md:" -ForegroundColor Yellow
+        $downloadUrl = "https://github.com/Deadbush225/$packageId/releases/download/v$version/$($_.Name)"
+        Write-Host "| Machine wide Online Installer - x64 | [$($_.Name)]($downloadUrl) | $($hash.Hash) |" -ForegroundColor White
+    }
+} else {
+    Write-Warning "No installer files found in ./windows-installer/"
+}
+
+Write-Host "`nInno Setup installer build completed!" -ForegroundColor Green

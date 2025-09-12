@@ -12,7 +12,7 @@
 		"categories": "Office;Finance;Calculator;",
 		"keywords": "printing;rates;calculator;quotation;business;office;",
 		"mime_types": "",
-		"executable": "Printing Rates",
+		"executable": "PrintingRates",
 		"icon_path": "icons/Printing Rates.png",
 		"package_id": "printing-rates",
 		"supports_files": false,

@@ -2,3 +2,4 @@ build*/
 delete/
 .vscode/
 /*.exe
+install/
