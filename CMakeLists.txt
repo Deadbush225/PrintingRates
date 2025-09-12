@@ -198,6 +198,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets Qt6::Core)
 # Propagate Boost availability to the app target too
 if(BOOST_AVAILABLE)
     target_compile_definitions(${PROJECT_NAME} PRIVATE HAVE_BOOST_LOG=1)
+
     if(WIN32 AND DEFINED BOOST_ROOT)
         target_link_libraries(${PROJECT_NAME} PUBLIC "boost_log" "boost_log_setup")
     else()
