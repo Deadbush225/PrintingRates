@@ -1,15 +1,7 @@
 # PowerShell script to build Inno Setup installer for Printing Rates
 # Based on the folder-customizer pattern - reads values from manifest.json
 
-# Ensure ./install exists by invoking the CMake convenience target
-if (Test-Path ./build) {
-	try {
-		Write-Host "Building install directory..." -ForegroundColor Yellow
-		cmake --build ./build --target install_local --config Release | Out-Null
-	} catch {
-		Write-Warning "Failed to build install_local target, continuing with existing install directory..."
-	}
-}
+# Skip building install directory - it should already be built by the CI workflow with Qt dependencies deployed
 
 # Read values from manifest.json
 $manifest = Get-Content -Raw -Path "./manifest.json" | ConvertFrom-Json
