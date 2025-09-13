@@ -145,82 +145,56 @@ _rm_glob(
     "${CMAKE_INSTALL_PREFIX}/bin/libwinpthread-1.dll"
 )
 
-# Remove unused Boost DLLs (keep only log and log_setup that this project uses)
-# Note: Static linking is preferred, but if dynamic linking is used, keep only needed libs
-file(GLOB _boost_unneeded
-    "${CMAKE_INSTALL_PREFIX}/boost_chrono*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_date_time*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_filesystem*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_graph*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_iostreams*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_locale*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_math*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_program_options*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_random*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_regex*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_serialization*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_system*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_test*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_thread*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_timer*.dll"
-    "${CMAKE_INSTALL_PREFIX}/boost_wave*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_chrono*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_date_time*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_filesystem*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_graph*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_iostreams*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_locale*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_math*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_program_options*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_random*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_regex*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_serialization*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_system*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_test*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_thread*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_timer*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/boost_wave*.dll"
+# Deploy only needed Boost DLLs (this project uses: log, log_setup)
+# This approach selectively keeps only what's needed instead of removing everything else
+set(_NEEDED_BOOST_LIBS "log;log_setup")
 
-    # Also remove libboost variants (keep log libs)
-    "${CMAKE_INSTALL_PREFIX}/libboost_chrono*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_date_time*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_filesystem*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_graph*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_iostreams*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_locale*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_math*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_program_options*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_random*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_regex*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_serialization*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_system*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_test*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_thread*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_timer*.dll"
-    "${CMAKE_INSTALL_PREFIX}/libboost_wave*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_chrono*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_date_time*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_filesystem*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_graph*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_iostreams*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_locale*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_math*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_program_options*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_random*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_regex*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_serialization*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_system*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_test*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_thread*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_timer*.dll"
-    "${CMAKE_INSTALL_PREFIX}/bin/libboost_wave*.dll"
+# Function to selectively install only needed Boost libraries
+function(install_needed_boost_libs needed_libs)
+    message(STATUS "Installing only needed Boost libraries: ${needed_libs}")
+
+    # First, find all Boost DLLs that were deployed
+    file(GLOB_RECURSE _all_boost_dlls
+        "${CMAKE_INSTALL_PREFIX}/*boost*.dll"
+        "${CMAKE_INSTALL_PREFIX}/bin/*boost*.dll"
+    )
+
+    # Create list of DLLs to keep
+    set(_dlls_to_keep)
+
+    foreach(_needed_lib IN LISTS needed_libs)
+        foreach(_dll IN LISTS _all_boost_dlls)
+            get_filename_component(_dll_name "${_dll}" NAME_WE)
+
+            # Match boost_log, libboost_log, boost_log_setup, etc.
+            if(_dll_name MATCHES ".*boost.*${_needed_lib}.*")
+                list(APPEND _dlls_to_keep "${_dll}")
+                message(STATUS "Keeping needed Boost DLL: ${_dll}")
+            endif()
+        endforeach()
+    endforeach()
+
+    # Remove all other Boost DLLs
+    foreach(_dll IN LISTS _all_boost_dlls)
+        list(FIND _dlls_to_keep "${_dll}" _keep_index)
+
+        if(_keep_index EQUAL -1)
+            message(STATUS "Removing unneeded Boost DLL: ${_dll}")
+            file(REMOVE "${_dll}")
+        endif()
+    endforeach()
+endfunction()
+
+# Only install needed Boost libraries if any Boost DLLs are present
+file(GLOB _boost_check
+    "${CMAKE_INSTALL_PREFIX}/*boost*.dll"
+    "${CMAKE_INSTALL_PREFIX}/bin/*boost*.dll"
 )
 
-if(_boost_unneeded)
-    foreach(_file IN LISTS _boost_unneeded)
-        message(STATUS "Removing unused Boost library: ${_file}")
-        file(REMOVE "${_file}")
-    endforeach()
+if(_boost_check)
+    install_needed_boost_libs("${_NEEDED_BOOST_LIBS}")
+else()
+    message(STATUS "No Boost DLLs found - likely using static linking (preferred)")
 endif()
 
 message(STATUS "PruneInstall.cmake completed")

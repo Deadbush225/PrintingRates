@@ -146,12 +146,11 @@ where gcc
 
 The scripts are automatically integrated with the CMake build system and will:
 
-1. Deploy only the required Boost DLLs (log and log-setup)
-2. Remove unused Boost components during installation pruning
-3. Set up proper linking for static/dynamic builds
-4. Configure CMake variables correctly
-
-## Project-Specific Configuration
+1. **Selective Boost deployment** - Only deploy the required Boost DLLs (log, log_setup) instead of all components
+2. **Targeted installation** - Uses `BoostDeploy.cmake` to find and install only needed libraries at build time
+3. **Fallback pruning** - Remove any extra Boost components during installation cleanup
+4. **Smart linking detection** - Automatically detects static vs dynamic linking and skips DLL deployment for static builds
+5. **Configure CMake variables correctly** - Sets up proper paths and variables## Project-Specific Configuration
 
 ### Printing Rates
 
