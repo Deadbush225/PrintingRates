@@ -107,11 +107,6 @@ if ($installerFiles.Count -gt 0) {
         Write-Host "  Size: ${sizeInMB} MB"
         Write-Host "  SHA256: $($hash.Hash)" -ForegroundColor Cyan
         Write-Host ""
-        
-        # Display in format ready for release notes
-        Write-Host "Ready for release_notes.md:" -ForegroundColor Yellow
-        $downloadUrl = "https://github.com/Deadbush225/$packageId/releases/download/v$version/$($_.Name)"
-        Write-Host "| Machine wide Online Installer - x64 | [$($_.Name)]($downloadUrl) | $($hash.Hash) |" -ForegroundColor White
     }
 } else {
     Write-Warning "No installer files found in ./windows-installer/"
