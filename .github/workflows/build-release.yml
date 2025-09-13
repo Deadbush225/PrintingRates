@@ -201,7 +201,7 @@ jobs:
           $deploymentSuccess = $true
 
           foreach ($dll in $qtDlls) {
-            $matches = Get-ChildItem -Path "./install/bin" -Filter $dll -Recurse -ErrorAction SilentlyContinue
+            $matches = Get-ChildItem -Path "./install" -Filter $dll -Recurse -ErrorAction SilentlyContinue
             if ($matches) {
               foreach ($match in $matches) {
                 $size = [math]::Round($match.Length / 1MB, 2)
