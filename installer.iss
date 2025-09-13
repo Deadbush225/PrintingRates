@@ -57,10 +57,11 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-; Application files
+; Package everything from the install directory
+Source: "install\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.pdb;*.lib;*.exp;*.map;*.ilk;*.debug"
+; Main executable needs to be accessible at app root for proper execution
 Source: "install\bin\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "install\bin\eUpdater.exe"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "install\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]

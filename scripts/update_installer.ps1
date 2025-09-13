@@ -21,6 +21,20 @@ $executable = "$($manifest.desktop.executable)".Trim()
 
 Write-Host "Building installer version $version for $desktopName (package: $packageId, executable: $executable)" -ForegroundColor Green
 
+# Debug: Show what files are in the install directory
+Write-Host "=== Files in install directory before building installer ===" -ForegroundColor Yellow
+if (Test-Path "./install") {
+    Get-ChildItem -Path "./install" -Recurse | ForEach-Object {
+        if (-not $_.PSIsContainer) {
+            $sizeInKB = [math]::Round($_.Length / 1KB, 2)
+            $relativePath = $_.FullName.Replace((Resolve-Path "./install").Path, "").TrimStart('\')
+            Write-Host "  $relativePath - ${sizeInKB} KB"
+        }
+    }
+} else {
+    Write-Host "  No install directory found!" -ForegroundColor Red
+}
+
 # Check if installer script exists
 if (-not (Test-Path "./installer.iss")) {
     Write-Error "Installer script not found: ./installer.iss"
