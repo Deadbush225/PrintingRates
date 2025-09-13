@@ -306,6 +306,11 @@ else()
     message(STATUS "ENABLE_QT_DEPLOY_SCRIPT=OFF; skipping Qt deploy script generation")
 endif()
 
+# Prune optional/banned bits that may remain or from previous installs using a script file
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PruneInstall.cmake")
+    install(SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PruneInstall.cmake")
+endif()
+
 # --- Convenience install targets -------------------------------------------
 # install_local: Build app + eUpdater, then remove
 # ./install and perform an installation into ./install using cmake --install.
